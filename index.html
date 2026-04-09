@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mundial de Clubes Central 2026 – Torneio Início</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #0a7c3e;
+    --green-dark: #054f27;
+    --green-light: #12a352;
+    --gold: #f0c040;
+    --gold-dark: #c8970a;
+    --white: #f5f5f0;
+    --gray: #1a1a1a;
+    --gray2: #2a2a2a;
+    --red: #c0392b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--gray); color: var(--white); font-family: 'Barlow', sans-serif; min-height: 100vh; }
+
+  header {
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 60%, var(--green-light) 100%);
+    text-align: center; padding: 36px 20px 28px; position: relative; overflow: hidden;
+  }
+  header::before {
+    content: ''; position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='28'/%3E%3Ccircle cx='30' cy='30' r='16'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+    pointer-events: none;
+  }
+  header .badge { display: inline-block; background: var(--gold); color: var(--green-dark); font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 3px; padding: 4px 18px; border-radius: 2px; margin-bottom: 12px; }
+  header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.4rem, 6vw, 4.5rem); letter-spacing: 4px; line-height: 1; color: var(--white); text-shadow: 0 3px 12px rgba(0,0,0,0.4); }
+  header h1 span { color: var(--gold); }
+  header p.sub { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: rgba(255,255,255,0.75); margin-top: 8px; }
+
+  nav { display: flex; justify-content: center; gap: 6px; padding: 18px 20px 0; flex-wrap: wrap; }
+  nav button { background: var(--gray2); color: rgba(255,255,255,0.55); border: none; font-family: 'Barlow Condensed', sans-serif; font-size: 0.95rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 10px 22px; border-radius: 4px 4px 0 0; cursor: pointer; transition: all .2s; border-bottom: 3px solid transparent; }
+  nav button:hover { color: var(--white); }
+  nav button.active { background: var(--green); color: var(--gold); border-bottom: 3px solid var(--gold); }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; }
+  section { display: none; }
+  section.active { display: block; animation: fadeIn .3s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:none } }
+
+  .live-bar { display: flex; align-items: center; justify-content: space-between; background: var(--gray2); border: 1px solid rgba(255,255,255,0.07); border-radius: 6px; padding: 8px 16px; margin-bottom: 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; color: rgba(255,255,255,0.4); letter-spacing: 1px; }
+  .dot-live { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green-light); margin-right: 6px; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  .fase-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 3px; color: var(--gold); margin: 28px 0 12px; display: flex; align-items: center; gap: 12px; }
+  .fase-title::after { content:''; flex:1; height:2px; background: linear-gradient(90deg, var(--gold-dark), transparent); }
+
+  .jogo-card { background: var(--gray2); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; gap: 16px; margin-bottom: 10px; transition: border-color .2s; }
+  .jogo-card.encerrado { border-color: rgba(10,124,62,0.35); }
+  .jogo-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--gold-dark); min-width: 26px; }
+  .jogo-info { flex: 1; min-width: 0; }
+  .jogo-hora { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; color: rgba(255,255,255,0.4); letter-spacing: 1px; margin-bottom: 4px; }
+  .jogo-confronto { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .team-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .team-name.right { text-align: right; }
+  .team-name.winner { color: var(--green-light); }
+  .placar-box { display: flex; align-items: center; background: var(--gray); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
+  .placar-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--gold); padding: 4px 14px; min-width: 48px; text-align: center; }
+  .placar-sep { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--red); padding: 0 2px; background: rgba(255,255,255,0.04); }
+  .placar-pending { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; color: rgba(255,255,255,0.25); letter-spacing: 2px; padding: 4px 18px; }
+  .status-pill { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px; padding: 3px 10px; border-radius: 3px; white-space: nowrap; }
+  .status-pill.pendente { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); }
+  .status-pill.encerrado { background: rgba(10,124,62,0.2); color: var(--green-light); border: 1px solid rgba(10,124,62,0.4); }
+
+  .chaves-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+  @media(max-width:600px){ .chaves-grid { grid-template-columns: 1fr; } }
+  .chave-card { background: var(--gray2); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.07); }
+  .chave-card h2 { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 3px; text-align: center; padding: 10px; border-bottom: 2px solid; }
+  .chave-card.chave-a h2 { background: var(--green-dark); border-color: var(--green-light); color: var(--gold); }
+  .chave-card.chave-b h2 { background: #1a2a4a; border-color: #3a5aaa; color: var(--gold); }
+  .chave-card ul { list-style: none; padding: 12px 0; }
+  .chave-card ul li { display: flex; align-items: center; gap: 10px; padding: 9px 18px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 600; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .chave-card ul li:last-child { border-bottom: none; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .chave-a .dot { background: var(--green-light); }
+  .chave-b .dot { background: #5a8aee; }
+
+  .standings-tbl { width:100%; border-collapse:collapse; font-family:'Barlow Condensed',sans-serif; font-size:0.88rem; margin-top:10px; }
+  .standings-tbl thead tr { background:rgba(255,255,255,0.05); }
+  .standings-tbl th { padding:5px 8px; text-align:center; letter-spacing:1px; color:rgba(255,255,255,0.4); font-weight:700; font-size:0.75rem; }
+  .standings-tbl th:nth-child(2) { text-align:left; }
+  .standings-tbl td { padding:6px 8px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:middle; }
+  .standings-tbl td:nth-child(2) { text-align:left; font-weight:600; }
+  .standings-tbl tr:last-child td { border-bottom:none; }
+
+  .bracket-wrap { display: flex; gap: 0; overflow-x: auto; padding-bottom: 16px; }
+  .bracket-col { display: flex; flex-direction: column; min-width: 210px; }
+  .bracket-col-title { font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 3px; color: rgba(255,255,255,0.3); text-align: center; padding: 8px 0 14px; }
+  .bracket-matches { display: flex; flex-direction: column; flex:1; }
+  .bracket-spacer { flex:1; min-height: 20px; }
+  .bracket-match { background: var(--gray2); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; margin: 8px 10px; overflow: hidden; }
+  .bracket-match-lbl { text-align: center; font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; letter-spacing: 1.5px; color: rgba(255,255,255,0.4); padding: 6px 8px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.06); line-height: 1.5; }
+  .bracket-team { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.92rem; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .bracket-team:last-child { border-bottom: none; }
+  .bracket-team.winner { color: var(--gold); background: rgba(240,192,64,0.07); }
+  .bracket-team .sc { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--gold-dark); }
+
+  .times-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+  .time-card { background: var(--gray2); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.07); transition: transform .2s, box-shadow .2s; }
+  .time-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+  .time-header { padding: 14px 18px; display: flex; align-items: center; gap: 14px; border-bottom: 2px solid var(--green); }
+  .time-emoji { font-size: 2.2rem; }
+  .time-nome { font-family: 'Bebas Neue', sans-serif; font-size: 1.35rem; letter-spacing: 2px; color: var(--white); }
+  .time-chave { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; background: var(--green-dark); color: var(--gold); padding: 3px 8px; border-radius: 3px; }
+  .jogadores-lista { padding: 6px 0 10px; }
+  .jogador-row { display: flex; align-items: center; gap: 10px; padding: 6px 18px; font-size: 0.92rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .jogador-row:last-child { border-bottom: none; }
+  .num { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--gold-dark); width: 24px; text-align: right; flex-shrink: 0; }
+  .nome { flex: 1; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; letter-spacing: 0.5px; }
+  .tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 1px; padding: 2px 7px; border-radius: 3px; font-family: 'Barlow Condensed', sans-serif; }
+  .tag.goleiro { background: rgba(10,124,62,0.3); color: var(--green-light); border: 1px solid var(--green-light); }
+  .tag.capitao { background: rgba(240,192,64,0.15); color: var(--gold); border: 1px solid var(--gold-dark); }
+
+  .badge-img { width:28px; height:28px; object-fit:contain; flex-shrink:0; border-radius:3px; }
+  .badge-img-sm { width:22px; height:22px; object-fit:contain; flex-shrink:0; vertical-align:middle; filter:drop-shadow(0 1px 2px rgba(0,0,0,0.5)); }
+  .badge-img-lg { width:48px; height:48px; object-fit:contain; flex-shrink:0; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+
+  footer { text-align: center; padding: 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 2px; color: rgba(255,255,255,0.3); }
+
+  /* ── CHAVE MATCH CARDS ── */
+  .chave-matches-list { display: flex; flex-direction: column; gap: 10px; }
+  .chave-match-card { background: var(--gray2); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px 18px; transition: border-color .2s; }
+  .chave-match-card.enc { border-color: rgba(10,124,62,0.35); }
+  .chave-match-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
+  .chave-match-hora { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; color: rgba(255,255,255,0.4); letter-spacing: 1px; }
+  .chave-match-badge { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px; padding: 2px 10px; border-radius: 3px; background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.45); }
+  .chave-match-confronto { display: flex; align-items: center; gap: 10px; }
+  .chave-team { font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 700; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chave-team.right { text-align: right; }
+  .chave-team.win { color: var(--green-light); }
+  .chave-vs { flex-shrink: 0; text-align: center; min-width: 60px; }
+  .chave-vs-text { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; color: rgba(255,255,255,0.2); letter-spacing: 2px; background: var(--gray); padding: 4px 12px; border-radius: 4px; }
+  .chave-placar { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--gold); letter-spacing: 4px; background: var(--gray); padding: 2px 10px; border-radius: 4px; }
+
+  /* ── PRÉ-CADASTRO ── */
+  #cadastro { max-width: 480px; margin: 0 auto; }
+  .cad-progress { height: 3px; background: var(--gray2); border-radius: 2px; margin-bottom: 28px; }
+  .cad-progress-fill { height: 100%; background: var(--green-light); border-radius: 2px; transition: width .35s ease; }
+
+  .cad-step { display: none; animation: fadeIn .25s ease; }
+  .cad-step.active { display: block; }
+
+  .cad-step-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; color: rgba(255,255,255,0.35); text-transform: uppercase; margin-bottom: 4px; }
+  .cad-step-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 3px; color: var(--gold); margin-bottom: 20px; }
+
+  .cad-team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .cad-team-card { background: var(--gray2); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 16px 10px; cursor: pointer; text-align: center; transition: all .15s; -webkit-tap-highlight-color: transparent; }
+  .cad-team-card:active { transform: scale(.97); }
+  .cad-team-card:hover { border-color: var(--green-light); background: rgba(10,124,62,0.12); }
+  .cad-team-card .ct-emoji { font-size: 1.8rem; display: block; margin-bottom: 5px; }
+  .cad-team-card .ct-nome { font-family: 'Barlow Condensed', sans-serif; font-size: 0.82rem; font-weight: 700; line-height: 1.2; }
+  .cad-team-card .ct-chave { font-size: 0.62rem; color: rgba(255,255,255,0.3); margin-top: 3px; }
+
+  .cad-player-list { display: flex; flex-direction: column; gap: 8px; }
+  .cad-player-item { background: var(--gray2); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 13px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all .15s; -webkit-tap-highlight-color: transparent; }
+  .cad-player-item:active { transform: scale(.98); }
+  .cad-player-item:hover { border-color: var(--green-light); background: rgba(10,124,62,0.12); }
+  .cad-player-item.done { opacity: .4; pointer-events: none; }
+  .cad-player-item .cp-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: rgba(255,255,255,0.3); width: 22px; text-align: center; flex-shrink: 0; }
+  .cad-player-item .cp-nome { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; flex: 1; }
+  .cp-role { font-size: 0.6rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
+  .cp-role.gol { background: rgba(240,192,64,0.15); color: var(--gold); }
+  .cp-role.cap { background: rgba(18,163,82,0.15); color: var(--green-light); }
+  .cp-done { font-size: 0.65rem; font-weight: 700; color: var(--green-light); margin-left: auto; }
+
+  .cad-selected-info { background: rgba(10,124,62,0.1); border: 1px solid rgba(18,163,82,0.3); border-radius: 8px; padding: 13px 16px; display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .csi-emoji { font-size: 1.5rem; flex-shrink: 0; }
+  .csi-team { font-size: 0.72rem; color: rgba(255,255,255,0.4); }
+  .csi-nome { font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 700; }
+
+  .cad-field { margin-bottom: 18px; }
+  .cad-field label { display: block; font-size: 0.7rem; font-weight: 700; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 7px; }
+  .cad-field input { width: 100%; padding: 13px 14px; background: var(--gray2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--white); font-family: 'Barlow', sans-serif; font-size: 1rem; outline: none; transition: border-color .15s; -webkit-appearance: none; }
+  .cad-field input:focus { border-color: var(--green-light); }
+
+  .metodo-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .metodo-btn { background: var(--gray2); border: 2px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 14px 6px; cursor: pointer; text-align: center; transition: all .15s; -webkit-tap-highlight-color: transparent; }
+  .metodo-btn:active { transform: scale(.96); }
+  .metodo-btn .mb-icon { font-size: 1.4rem; display: block; margin-bottom: 5px; }
+  .metodo-btn .mb-nome { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; font-weight: 700; }
+  .metodo-btn.sel-pix    { border-color: var(--green-light); background: rgba(18,163,82,0.12); }
+  .metodo-btn.sel-cartao { border-color: #3a82f7; background: rgba(58,130,247,0.1); }
+  .metodo-btn.sel-din    { border-color: var(--gold); background: rgba(240,192,64,0.1); }
+
+  .pix-info-box { display: none; margin-top: 14px; background: rgba(10,124,62,0.08); border: 1px solid rgba(18,163,82,0.25); border-radius: 8px; padding: 16px; }
+  .pix-info-box.show { display: block; animation: fadeIn .2s ease; }
+  .pix-info-title { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; color: var(--green-light); text-transform: uppercase; margin-bottom: 10px; }
+  .pix-key-row { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.25); border-radius: 6px; padding: 10px 14px; margin-bottom: 8px; }
+  .pix-key-val { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; flex: 1; word-break: break-all; }
+  .pix-copy { background: var(--green-dark); border: none; color: var(--white); font-size: 0.7rem; font-weight: 700; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; flex-shrink: 0; }
+  .pix-amount { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--green-light); text-align: center; letter-spacing: 3px; margin-top: 4px; }
+  .pix-obs { font-size: 0.72rem; color: rgba(255,255,255,0.4); text-align: center; margin-top: 8px; line-height: 1.5; }
+
+  .info-box { display: none; margin-top: 14px; border-radius: 8px; padding: 14px 16px; }
+  .info-box.show { display: block; animation: fadeIn .2s ease; }
+  .info-box.cartao { background: rgba(58,130,247,0.07); border: 1px solid rgba(58,130,247,0.2); }
+  .info-box.din    { background: rgba(240,192,64,0.06); border: 1px solid rgba(240,192,64,0.18); }
+  .info-box p { font-size: 0.82rem; line-height: 1.6; }
+
+  .cad-btn-primary { width: 100%; padding: 15px; background: var(--green-dark); border: 1px solid var(--green-light); border-radius: 8px; color: var(--white); font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: 2px; cursor: pointer; transition: background .15s; margin-top: 22px; -webkit-appearance: none; }
+  .cad-btn-primary:hover, .cad-btn-primary:active { background: var(--green); }
+  .cad-btn-back { display: flex; align-items: center; gap: 6px; background: none; border: none; color: rgba(255,255,255,0.4); font-family: 'Barlow', sans-serif; font-size: 0.82rem; cursor: pointer; margin-bottom: 18px; padding: 4px 0; }
+  .cad-btn-back:hover { color: var(--white); }
+
+  .cad-success { text-align: center; padding: 30px 10px; }
+  .cad-success .cs-icon { font-size: 4rem; display: block; margin-bottom: 16px; }
+  .cad-success h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 5px; color: var(--green-light); margin-bottom: 8px; }
+  .cad-success .cs-nome { font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 14px; }
+  .cad-success .cs-metodo { display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px; }
+  .cs-metodo.pix    { background: rgba(18,163,82,0.15); color: var(--green-light); border: 1px solid rgba(18,163,82,0.3); }
+  .cs-metodo.cartao { background: rgba(58,130,247,0.15); color: #3a82f7; border: 1px solid rgba(58,130,247,0.3); }
+  .cs-metodo.din    { background: rgba(240,192,64,0.12); color: var(--gold); border: 1px solid rgba(240,192,64,0.25); }
+  .cad-success .cs-obs { font-size: 0.82rem; color: rgba(255,255,255,0.45); line-height: 1.7; margin-bottom: 28px; }
+  .cad-btn-outline { display: inline-block; padding: 12px 28px; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: rgba(255,255,255,0.5); font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 700; letter-spacing: 1.5px; cursor: pointer; background: none; transition: all .15s; }
+  .cad-btn-outline:hover { border-color: var(--white); color: var(--white); }
+
+  #cad-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--green-light); color: #000; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; padding: 10px 22px; border-radius: 6px; opacity: 0; transition: all .3s; pointer-events: none; white-space: nowrap; z-index: 999; }
+  #cad-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── ADMIN ── */
+  #admin { max-width: 680px; margin: 0 auto; }
+  .adm-card { background: var(--gray2); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 20px; margin-bottom: 18px; }
+  .adm-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 3px; color: var(--gold); margin-bottom: 16px; display:flex; align-items:center; gap:8px; }
+  .adm-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-end; flex-wrap: wrap; }
+  .adm-field { display:flex; flex-direction:column; gap:5px; flex:1; min-width:120px; }
+  .adm-field label { font-size:0.68rem; font-weight:700; letter-spacing:1.5px; color:rgba(255,255,255,0.4); text-transform:uppercase; }
+  .adm-field input, .adm-field textarea, .adm-field select { background:var(--gray); border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:var(--white); font-family:'Barlow',sans-serif; font-size:0.9rem; padding:9px 12px; outline:none; transition:border-color .15s; width:100%; }
+  .adm-field textarea { min-height:70px; resize:vertical; font-size:0.82rem; }
+  .adm-field input:focus, .adm-field textarea:focus { border-color:var(--green-light); }
+  .adm-btn { background:var(--green-dark); border:1px solid var(--green-light); color:var(--white); font-family:'Barlow Condensed',sans-serif; font-size:0.9rem; font-weight:700; letter-spacing:1.5px; padding:9px 18px; border-radius:6px; cursor:pointer; transition:background .15s; white-space:nowrap; }
+  .adm-btn:hover { background:var(--green); }
+  .adm-btn.danger { background:rgba(192,57,43,0.2); border-color:var(--red); color:#e74c3c; }
+  .adm-btn.danger:hover { background:rgba(192,57,43,0.4); }
+  .adm-btn.sec { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.15); }
+  .adm-jogo { background:var(--gray); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:14px; margin-bottom:10px; }
+  .adm-jogo-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; flex-wrap:wrap; gap:6px; }
+  .adm-jogo-title { font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; }
+  .adm-jogo-sub { font-size:0.72rem; color:rgba(255,255,255,0.35); letter-spacing:1px; }
+  .adm-toggle { display:flex; align-items:center; gap:8px; font-size:0.82rem; color:rgba(255,255,255,0.5); cursor:pointer; }
+  .adm-toggle input[type=checkbox] { width:16px; height:16px; accent-color:var(--green-light); }
+  .adm-lock { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; text-align:center; }
+  .adm-lock h2 { font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:4px; color:var(--gold); margin-bottom:8px; }
+  .adm-lock p { font-size:0.85rem; color:rgba(255,255,255,0.4); margin-bottom:24px; }
+  .adm-lock input { background:var(--gray2); border:1px solid rgba(255,255,255,0.15); border-radius:8px; color:var(--white); font-size:1.1rem; padding:12px 20px; outline:none; text-align:center; width:100%; max-width:280px; margin-bottom:14px; }
+  .adm-status { font-size:0.75rem; padding:4px 10px; border-radius:4px; font-family:'Barlow Condensed',sans-serif; letter-spacing:1px; font-weight:700; }
+  .adm-status.ok { background:rgba(10,124,62,0.2); color:var(--green-light); border:1px solid rgba(10,124,62,0.4); }
+  .adm-status.err { background:rgba(192,57,43,0.15); color:#e74c3c; border:1px solid rgba(192,57,43,0.3); }
+  .adm-status.warn { background:rgba(240,192,64,0.1); color:var(--gold); border:1px solid rgba(240,192,64,0.3); }
+  .adm-pag-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); flex-wrap:wrap; }
+  .adm-pag-row:last-child { border-bottom:none; }
+  .adm-pag-nome { font-family:'Barlow Condensed',sans-serif; font-size:0.95rem; font-weight:700; flex:1; }
+  .adm-pag-met { font-size:0.7rem; color:rgba(255,255,255,0.4); }
+  .adm-pag-pago { font-size:0.7rem; font-weight:700; padding:3px 8px; border-radius:4px; }
+  .adm-pag-pago.sim { background:rgba(10,124,62,0.2); color:var(--green-light); border:1px solid rgba(18,163,82,0.3); }
+  .adm-pag-pago.nao { background:rgba(240,192,64,0.08); color:rgba(255,255,255,0.3); border:1px solid rgba(255,255,255,0.1); }
+  .fb-status-bar { display:flex; align-items:center; gap:8px; font-family:'Barlow Condensed',sans-serif; font-size:0.8rem; letter-spacing:1px; padding:8px 14px; border-radius:6px; margin-bottom:14px; }
+  .fb-status-bar.connected { background:rgba(10,124,62,0.12); border:1px solid rgba(18,163,82,0.2); color:var(--green-light); }
+  .fb-status-bar.disconnected { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); color:rgba(255,255,255,0.3); }
+  .fb-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
+  .connected .fb-dot { background:var(--green-light); animation:pulse 1.5s infinite; }
+  .disconnected .fb-dot { background:rgba(255,255,255,0.2); }
+  /* ── BOTÕES JOGADORES ARTILHEIROS ── */
+  .sc-jogador-btn { background:rgba(18,163,82,0.1); border:1px solid rgba(18,163,82,0.3); border-radius:20px; color:var(--white); font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; font-weight:700; padding:4px 10px; cursor:pointer; transition:all .15s; white-space:nowrap; }
+  .sc-jogador-btn:hover { background:rgba(18,163,82,0.3); border-color:var(--green-light); color:var(--white); }
+  .sc-jogador-btn:active { transform:scale(.95); }
+  .sc-jogador-btn-b { background:rgba(58,130,247,0.1); border-color:rgba(58,130,247,0.3); }
+  .sc-jogador-btn-b:hover { background:rgba(58,130,247,0.3); border-color:#3a82f7; }
+
+  .adm-section-btn { width:100%; text-align:left; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:8px; color:var(--white); font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; letter-spacing:1px; padding:13px 16px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; transition:background .15s; }
+  .adm-section-btn:hover { background:rgba(255,255,255,0.06); }
+  .adm-collapsible { display:none; }
+  .adm-collapsible.open { display:block; animation:fadeIn .2s ease; }
+
+
+</style>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="badge">⚽ TORNEIO INÍCIO</div>
+  <h1>MUNDIAL DE <span>CLUBES</span> CENTRAL <span>2026</span></h1>
+  <p class="sub">Recanto Central · 23 de Maio de 2026</p>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('tabela',this)">📅 Tabela de Jogos</button>
+  <button onclick="showTab('artilharia',this)">⚽ Artilharia</button>
+  <button onclick="showTab('times',this)">👕 Times & Elencos</button>
+  <button onclick="showTab('cadastro',this)">📋 Cadastro</button>
+  <button onclick="showTab('admin',this)" id="btn-admin" style="margin-left:auto;opacity:0.3;font-size:0.75rem;padding:10px 14px;">⚙ Admin</button>
+</nav>
+
+<main>
+  <section id="tabela" class="active">
+    <div class="live-bar">
+      <span><span class="dot-live"></span>Atualizado pelo Admin automaticamente</span>
+      <span id="last-update">—</span>
+    </div>
+    <div id="chaves-content"></div>
+    <div id="tabela-content"></div>
+  </section>
+  <section id="artilharia"><div id="artilharia-content"></div></section>
+  <section id="times"><div id="times-content"></div></section>
+</main>
+
+
+  <section id="cadastro">
+    <div class="cad-progress"><div class="cad-progress-fill" id="cad-progress" style="width:25%"></div></div>
+
+    <!-- Step 1: Time -->
+    <div class="cad-step active" id="cad-s1">
+      <div class="cad-step-label">Passo 1 de 3</div>
+      <div class="cad-step-title">Selecione seu Time</div>
+      <div class="cad-team-grid" id="cad-team-grid"></div>
+    </div>
+
+    <!-- Step 2: Jogador -->
+    <div class="cad-step" id="cad-s2">
+      <button class="cad-btn-back" onclick="cadGoStep(1)">← Voltar</button>
+      <div class="cad-step-label">Passo 2 de 3</div>
+      <div class="cad-step-title">Selecione seu Nome</div>
+      <div class="cad-player-list" id="cad-player-list"></div>
+    </div>
+
+    <!-- Step 3: Dados + Pagamento -->
+    <div class="cad-step" id="cad-s3">
+      <button class="cad-btn-back" onclick="cadGoStep(2)">← Voltar</button>
+      <div class="cad-step-label">Passo 3 de 3</div>
+      <div class="cad-step-title">Confirmar & Pagar</div>
+
+      <div class="cad-selected-info" id="cad-sel-info"></div>
+
+      <div class="cad-field">
+        <label>Telefone / WhatsApp</label>
+        <input type="tel" id="cad-inp-tel" placeholder="(XX) XXXXX-XXXX" maxlength="20" oninput="cadMaskTel(this)">
+      </div>
+
+      <div class="cad-field">
+        <label>Forma de Pagamento</label>
+        <div class="metodo-grid">
+          <div class="metodo-btn" id="cad-btn-pix"    onclick="cadSelectMetodo('PIX')"><span class="mb-icon">💚</span><span class="mb-nome">PIX</span></div>
+          <div class="metodo-btn" id="cad-btn-cartao" onclick="cadSelectMetodo('CARTÃO')"><span class="mb-icon">💳</span><span class="mb-nome">Cartão</span></div>
+          <div class="metodo-btn" id="cad-btn-din"    onclick="cadSelectMetodo('DINHEIRO')"><span class="mb-icon">💵</span><span class="mb-nome">Dinheiro</span></div>
+        </div>
+
+        <div class="pix-info-box" id="cad-pix-box">
+          <div class="pix-info-title">🔑 Dados para pagamento via PIX</div>
+          <div class="pix-key-row">
+            <span class="pix-key-val" id="cad-pix-key">—</span>
+            <button class="pix-copy" onclick="cadCopiarPix()">COPIAR</button>
+          </div>
+          <div class="pix-amount" id="cad-pix-val"></div>
+          <div class="pix-obs">Após pagar, clique em <strong>CONFIRMAR CADASTRO</strong>.<br>O admin confirmará o recebimento.</div>
+        </div>
+        <div class="info-box cartao" id="cad-cartao-box">
+          <p>💳 Pagamento via <strong>cartão</strong> será realizado presencialmente com o organizador antes dos jogos.</p>
+        </div>
+        <div class="info-box din" id="cad-din-box">
+          <p>💵 Pagamento em <strong>dinheiro</strong> deve ser entregue ao organizador antes dos jogos.</p>
+        </div>
+      </div>
+
+      <button class="cad-btn-primary" onclick="cadConfirmar()">✔ CONFIRMAR CADASTRO</button>
+    </div>
+
+    <!-- Step 4: Sucesso -->
+    <div class="cad-step" id="cad-s4">
+      <div class="cad-success">
+        <span class="cs-icon">✅</span>
+        <h2>CADASTRADO!</h2>
+        <div class="cs-nome" id="cad-cs-nome"></div>
+        <div class="cs-metodo" id="cad-cs-metodo"></div>
+        <p class="cs-obs" id="cad-cs-obs"></p>
+        <button class="cad-btn-outline" onclick="cadReset()">Cadastrar outro jogador</button>
+      </div>
+    </div>
+  </section>
+
+
+
+<!-- ADMIN PANEL -->
+<section id="admin" style="display:none">
+  <!-- LOCK SCREEN -->
+  <div class="adm-lock" id="adm-lock">
+    <h2>⚙ PAINEL ADMIN</h2>
+    <p>Área restrita ao organizador do torneio.</p>
+    <input type="password" id="adm-senha-inp" placeholder="Senha do admin" onkeydown="if(event.key==='Enter')admLogin()">
+    <button class="adm-btn" onclick="admLogin()">ENTRAR</button>
+    <div id="adm-lock-msg" style="margin-top:10px;font-size:0.8rem;color:#e74c3c;min-height:20px;"></div>
+  </div>
+
+  <!-- PAINEL LOGADO -->
+  <div id="adm-panel" style="display:none">
+
+    <!-- Firebase status -->
+    <div class="fb-status-bar disconnected" id="fb-status-bar">
+      <div class="fb-dot"></div>
+      <span id="fb-status-txt">Firebase não configurado</span>
+      <button class="adm-btn sec" style="margin-left:auto;font-size:0.72rem;padding:5px 10px;" onclick="admToggle('adm-firebase-section')">Configurar</button>
+    </div>
+
+    <!-- Firebase Config (colapsável) -->
+    <div class="adm-collapsible" id="adm-firebase-section">
+      <div class="adm-card">
+        <h3>🔥 Configuração Firebase</h3>
+        <p style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:14px;line-height:1.6;">
+          Crie um projeto no <a href="https://console.firebase.google.com" target="_blank" style="color:var(--gold)">console.firebase.google.com</a>,
+          ative o <strong>Realtime Database</strong>, copie as credenciais do projeto e cole o JSON abaixo.
+        </p>
+        <div class="adm-field" style="margin-bottom:12px">
+          <label>Cole o firebaseConfig JSON do seu projeto</label>
+          <textarea id="fb-config-inp" placeholder='{"apiKey":"...","authDomain":"...","databaseURL":"https://seu-projeto.firebaseio.com","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}'></textarea>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="adm-btn" onclick="fbSalvarConfig()">💾 SALVAR E CONECTAR</button>
+          <button class="adm-btn danger" onclick="fbLimparConfig()">🗑 REMOVER CONFIG</button>
+        </div>
+        <div id="fb-config-msg" style="margin-top:10px;font-size:0.8rem;min-height:18px;"></div>
+        <div style="margin-top:16px;padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:0.75rem;color:rgba(255,255,255,0.35);line-height:1.8">
+          <strong style="color:rgba(255,255,255,0.5)">Regras do Realtime Database (cole no Firebase Console → Regras):</strong><br>
+          <code style="color:var(--gold);font-size:0.7rem">{"rules":{".read":true,".write":"auth != null"}}</code><br>
+          <span>Ou para testes (sem auth):</span><br>
+          <code style="color:#e74c3c;font-size:0.7rem">{"rules":{".read":true,".write":true}}</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- Configurações -->
+    <button class="adm-section-btn" onclick="admToggle('adm-config-section')">
+      ⚙ Configurações Gerais <span>›</span>
+    </button>
+    <div class="adm-collapsible" id="adm-config-section">
+      <div class="adm-card">
+        <h3>⚙ Configurações</h3>
+        <div class="adm-row">
+          <div class="adm-field">
+            <label>Chave PIX</label>
+            <input type="text" id="cfg-pix-key" placeholder="CPF, e-mail ou chave aleatória">
+          </div>
+          <div class="adm-field" style="max-width:130px">
+            <label>Valor (R$)</label>
+            <input type="number" id="cfg-pix-val" placeholder="0.00" step="0.01" min="0">
+          </div>
+        </div>
+        <div class="adm-row">
+          <div class="adm-field">
+            <label>Nova Senha Admin</label>
+            <input type="password" id="cfg-nova-senha" placeholder="Deixe em branco p/ manter">
+          </div>
+        </div>
+        <button class="adm-btn" onclick="admSalvarConfig()">💾 SALVAR CONFIGURAÇÕES</button>
+        <div id="cfg-msg" style="margin-top:10px;font-size:0.8rem;min-height:18px;color:var(--green-light)"></div>
+      </div>
+    </div>
+
+    <!-- Gerenciar Jogos -->
+    <button class="adm-section-btn" onclick="admToggle('adm-jogos-section');admRenderJogos()">
+      📋 Gerenciar Jogos & Placares <span>›</span>
+    </button>
+    <div class="adm-collapsible" id="adm-jogos-section">
+      <div id="adm-jogos-list"></div>
+    </div>
+
+    <!-- Gerenciar Pagamentos -->
+    <button class="adm-section-btn" onclick="admToggle('adm-pag-section');admRenderPagamentos()">
+      💰 Gerenciar Pagamentos <span>›</span>
+    </button>
+    <div class="adm-collapsible" id="adm-pag-section">
+      <div class="adm-card">
+        <h3>💰 Pagamentos por Time</h3>
+        <div id="adm-pag-list"></div>
+      </div>
+    </div>
+
+    <!-- Dados -->
+    <button class="adm-section-btn" onclick="admToggle('adm-dados-section')">
+      🗄 Reset de Dados <span>›</span>
+    </button>
+    <div class="adm-collapsible" id="adm-dados-section">
+      <div class="adm-card">
+        <h3>🗄 Dados</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="adm-btn" onclick="admPublicarFirebase()">🚀 PUBLICAR TUDO NO FIREBASE</button>
+          <button class="adm-btn danger" onclick="admResetarJogos()">⚠ RESETAR JOGOS</button>
+          <button class="adm-btn sec" onclick="admLogout()">🔒 Sair do Admin</button>
+        </div>
+        <div id="adm-dados-msg" style="margin-top:10px;font-size:0.8rem;min-height:18px;color:var(--green-light)"></div>
+      </div>
+    </div>
+
+  </div><!-- fim adm-panel -->
+</section>
+
+<footer>MUNDIAL DE CLUBES CENTRAL 2026 · RECANTO CENTRAL · 23/05/2026</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  DADOS DEFAULT
+// ═══════════════════════════════════════════════════════════
+const TIMES_DEFAULT = [
+  // CHAVE A: Manchester City, Los Angeles, Urawa, Borussia
+  { id:'mancity', nome:'Manchester City', emoji:'🩵⚪', badge:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTEwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibWMxIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM2Q0FCREQiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxQzJDNUIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxwYXRoIGQ9Ik01MCw0IEw5MiwxOCBMOTIsNjIgUTkyLDk1IDUwLDEwNyBROCw5NSA4LDYyIEw4LDE4IFoiIGZpbGw9InVybCgjbWMxKSIgc3Ryb2tlPSIjMUMyQzVCIiBzdHJva2Utd2lkdGg9IjIuNSIvPgogIDxyZWN0IHg9IjgiIHk9IjQ2IiB3aWR0aD0iODQiIGhlaWdodD0iMTgiIGZpbGw9IndoaXRlIiBvcGFjaXR5PSIwLjE1Ii8+CiAgPHBvbHlnb24gcG9pbnRzPSI1MCwxNCA1Mi40LDIxIDU5LjUsMjEgNTMuOSwyNS40IDU2LjIsMzIuNSA1MCwyOC4yIDQzLjgsMzIuNSA0Ni4xLDI1LjQgNDAuNSwyMSA0Ny42LDIxIiBmaWxsPSIjRkZENzAwIi8+CiAgPHRleHQgeD0iNTAiIHk9IjYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iYm9sZCIgbGV0dGVyLXNwYWNpbmc9IjEiPk1DPC90ZXh0PgogIDxyZWN0IHg9IjgiIHk9IjgyIiB3aWR0aD0iODQiIGhlaWdodD0iMTgiIGZpbGw9IiMxQzJDNUIiLz4KICA8dGV4dCB4PSI1MCIgeT0iOTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2Q0FCREQiIGZvbnQtc2l6ZT0iNy41IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBsZXR0ZXItc3BhY2luZz0iMiI+Q0lUWTwvdGV4dD4KPC9zdmc+', chave:'A', jogadores:[
+    {num:1,nome:'Vinicius Noga',role:'goleiro',gols:0,tel:'',pago:false},{num:2,nome:'Paulo Roberto Maciel',role:'capitao',gols:0,tel:'',pago:false},
+    {num:3,nome:'Higor Azzi',role:'',gols:0,tel:'',pago:false},{num:4,nome:'Hebert Maia',role:'',gols:0,tel:'',pago:false},
+    {num:5,nome:'Jander',role:'',gols:0,tel:'',pago:false},{num:6,nome:'Bruno Diniz',role:'',gols:0,tel:'',pago:false},
+    {num:7,nome:'Samuel Silva',role:'',gols:0,tel:'',pago:false},{num:8,nome:'Welerson Marcos',role:'',gols:0,tel:'',pago:false},
+    {num:9,nome:'Gabriel Gomes',role:'',gols:0,tel:'',pago:false},{num:10,nome:'Arthur Moreira',role:'',gols:0,tel:'',pago:false},
+    {num:11,nome:'Derick Lorran',role:'',gols:0,tel:'',pago:false},{num:12,nome:'Celso Augusto',role:'',gols:0,tel:'',pago:false}
+  ]},
+  { id:'la', nome:'Los Angeles', emoji:'⚫🟡', badge:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTEwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibGExIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMxYTFhMWEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMDAiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxwYXRoIGQ9Ik01MCw0IEw5MiwxOCBMOTIsNjIgUTkyLDk1IDUwLDEwNyBROCw5NSA4LDYyIEw4LDE4IFoiIGZpbGw9InVybCgjbGExKSIgc3Ryb2tlPSIjQzM5RTZEIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8cGF0aCBkPSJNOCwyOCBMMzIsMTggTDkyLDc4IEw5Miw2MiBMMzgsMTggTDgsMTggWiIgZmlsbD0iI0MzOUU2RCIgb3BhY2l0eT0iMC4yNSIvPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNTIiIHI9IjI2IiBmaWxsPSJub25lIiBzdHJva2U9IiNDMzlFNkQiIHN0cm9rZS13aWR0aD0iMi41Ii8+CiAgPHRleHQgeD0iNTAiIHk9IjQ3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjQzM5RTZEIiBmb250LXNpemU9IjE1IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIj5MQTwvdGV4dD4KICA8dGV4dCB4PSI1MCIgeT0iNjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjgiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiIGxldHRlci1zcGFjaW5nPSIyIj5GQzwvdGV4dD4KPC9zdmc+', chave:'A', jogadores:[
+    {num:1,nome:'Celsinho',role:'goleiro',gols:0,tel:'',pago:false},{num:2,nome:'Hebert Dorigo',role:'',gols:0,tel:'',pago:false},
+    {num:3,nome:'Elias Anacleto',role:'',gols:0,tel:'',pago:false},{num:4,nome:'Thiago Henrique',role:'',gols:0,tel:'',pago:false},
+    {num:5,nome:'Jefferson',role:'',gols:0,tel:'',pago:false},{num:6,nome:'Lucas Luciano',role:'capitao',gols:0,tel:'',pago:false},
+    {num:7,nome:'Gustavo Moreira',role:'',gols:0,tel:'',pago:false},{num:8,nome:'Arthur Lins',role:'',gols:0,tel:'',pago:false},
+    {num:9,nome:'Mateus da Silva',role:'',gols:0,tel:'',pago:false},{num:10,nome:'Lucas Gabriel',role:'',gols:0,tel:'',pago:false},
+    {num:11,nome:'José Avelino',role:'',gols:0,tel:'',pago:false},{num:12,nome:'Igor Cavalcante',role:'',gols:0,tel:'',pago:false}
+  ]},
+  { id:'urawa', nome:'Urawa', emoji:'🔴⚪', badge:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTEwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0idXIxIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNFNjAwMTIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM4QjAwMDAiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxwYXRoIGQ9Ik01MCw0IEw5MiwxOCBMOTIsNjIgUTkyLDk1IDUwLDEwNyBROCw5NSA4LDYyIEw4LDE4IFoiIGZpbGw9InVybCgjdXIxKSIgc3Ryb2tlPSIjOEIwMDAwIiBzdHJva2Utd2lkdGg9IjIuNSIvPgogIDxwb2x5Z29uIHBvaW50cz0iNTAsMjYgNjAsNDAgNTAsNTQgNDAsNDAiIGZpbGw9IndoaXRlIi8+CiAgPHBvbHlnb24gcG9pbnRzPSIzNCw0NiA0NCw2MCAzNCw3NCAyNCw2MCIgZmlsbD0id2hpdGUiIG9wYWNpdHk9IjAuNyIvPgogIDxwb2x5Z29uIHBvaW50cz0iNjYsNDYgNzYsNjAgNjYsNzQgNTYsNjAiIGZpbGw9IndoaXRlIiBvcGFjaXR5PSIwLjciLz4KICA8dGV4dCB4PSI1MCIgeT0iOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjciIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiIGxldHRlci1zcGFjaW5nPSIxLjUiPlVSQVdBPC90ZXh0Pgo8L3N2Zz4=', chave:'A', jogadores:[
+    {num:1,nome:'Gabriel Mega',role:'goleiro',gols:0,tel:'',pago:false},{num:2,nome:'Valdner',role:'capitao',gols:0,tel:'',pago:false},
+    {num:3,nome:'Zé Carlos',role:'',gols:0,tel:'',pago:false},{num:4,nome:'Caio Augusto',role:'',gols:0,tel:'',pago:false},
+    {num:5,nome:'Alisson Dias',role:'',gols:0,tel:'',pago:false},{num:6,nome:'Gabriel Yuri',role:'',gols:0,tel:'',pago:false},
+    {num:7,nome:'Keliton Rafael',role:'',gols:0,tel:'',pago:false},{num:8,nome:'João Pedro Gomes',role:'',gols:0,tel:'',pago:false},
+    {num:9,nome:'Marco Tulio',role:'',gols:0,tel:'',pago:false},{num:10,nome:'Wallef Henrique',role:'',gols:0,tel:'',pago:false},
+    {num:11,nome:'Lucas Inglacio',role:'',gols:0,tel:'',pago:false},{num:12,nome:'Weliton Jones',role:'',gols:0,tel:'',pago:false}
+  ]},
+  { id:'borussia', nome:'Borussia', emoji:'🟡⚫', badge:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTEwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iYnYxIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNGREUxMDAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNFNkM4MDAiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxwYXRoIGQ9Ik01MCw0IEw5MiwxOCBMOTIsNjIgUTkyLDk1IDUwLDEwNyBROCw5NSA4LDYyIEw4LDE4IFoiIGZpbGw9InVybCgjYnYxKSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUyIiByPSIyOCIgZmlsbD0iIzAwMCIvPgogIDx0ZXh0IHg9IjUwIiB5PSI0NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI0ZERTEwMCIgZm9udC1zaXplPSIxNCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iYm9sZCI+QlZCPC90ZXh0PgogIDx0ZXh0IHg9IjUwIiB5PSI2MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI0ZERTEwMCIgZm9udC1zaXplPSIxMiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iYm9sZCI+MDk8L3RleHQ+CiAgPGNpcmNsZSBjeD0iMzUiIGN5PSIyMCIgcj0iMyIgZmlsbD0iIzAwMCIvPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iMTYiIHI9IjMiIGZpbGw9IiMwMDAiLz4KICA8Y2lyY2xlIGN4PSI2NSIgY3k9IjIwIiByPSIzIiBmaWxsPSIjMDAwIi8+Cjwvc3ZnPg==', chave:'A', jogadores:[
+    {num:1,nome:'Ryan Talles',role:'goleiro',gols:0,tel:'',pago:false},{num:2,nome:'Ronaldinho',role:'capitao',gols:0,tel:'',pago:false},
+    {num:3,nome:'Edimir',role:'',gols:0,tel:'',pago:false},{num:4,nome:'Daniel Tancredo',role:'',gols:0,tel:'',pago:false},
+    {num:5,nome:'Dherikworick',role:'',gols:0,tel:'',pago:false},{num:6,nome:'Arthur Lourenço',role:'',gols:0,tel:'',pago:false},
+    {num:7,nome:'Guilherme Laureano',role:'',gols:0,tel:'',pago:false},{num:8,nome:'Matheus Vieira',role:'',gols:0,tel:'',pago:false},
+    {num:9,nome:'Rafael Marlon',role:'',gols:0,tel:'',pago:false},{num:10,nome:'Malcon Ribeiro',role:'',gols:0,tel:'',pago:false},
+    {num:11,nome:'Francisco Augusto',role:'',gols:0,tel:'',pago:false},{num:12,nome:'Raul',role:'',gols:0,tel:'',pago:false}
+  ]},
+  // CHAVE B: Chelsea, Inter Miami, Juventus, Atlético de Madri
+  { id:'chelsea', nome:'Chelsea', emoji:'🔵⚪', badge:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTEwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iY2gxIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwMzQ2OTQiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMTIwNjAiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxwYXRoIGQ9Ik01MCw0IEw5MiwxOCBMOTIsNjIgUTkyLDk1IDUwLDEwNyBROCw5NSA4LDYyIEw4LDE4IFoiIGZpbGw9InVybCgjY2gxKSIgc3Ryb2tlPSIjMDM0Njk0IiBzdHJva2Utd2lkdGg9IjIuNSIvPgogIDxyZWN0IHg9IjgiIHk9IjQ0IiB3aWR0aD0iODQiIGhlaWdodD0iMTQiIGZpbGw9IiNFRTI0MkMiLz4KICA8dGV4dCB4PSI1MCIgeT0iMzYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjIwIiBmb250LWZhbWlseT0ic2VyaWYiPiYjOTgyMjs8L3RleHQ+CiAgPHRleHQgeD0iNTAiIHk9IjUxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSI5IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBsZXR0ZXItc3BhY2luZz0iMiI+Q0ZDPC90ZXh0PgogIDx0ZXh0IHg9IjUwIiB5PSI3MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI0VFRSIgZm9udC1zaXplPSI3LjUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiIGxldHRlci1zcGFjaW5nPSIyIj5DSEVMU0VBPC90ZXh0PgogIDx0ZXh0IHg9IjUwIiB5PSI4OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjQpIiBmb250LXNpemU9IjciIGZvbnQtZmFtaWx5PSJBcmlhbCI+MTkwNTwvdGV4dD4KPC9zdmc+', chave:'B', jogadores:[
+    {num:1,nome:'Ramon',role:'goleiro',gols:0,tel:'',pago:false},{num:2,nome:'Vagner de Souza',role:'',gols:0,tel:'',pago:false},
+    {num:3,nome:'Weligton Coutinho',role:'',gols:0,tel:'',pago:false},{num:4,nome:'Douglas Riveres',role:'capitao',gols:0,tel:'',pago:false},
+    {num:5,nome:'Wguvicth',role:'',gols:0,tel:'',pago:false},{num:6,nome:'Marlon Henrique',role:'',gols:0,tel:'',pago:false},
+    {num:7,nome:'Gustavo Henrique Reis',role:'',gols:0,tel:'',pago:false},{num:8,nome:'Lucas Sena',role:'',gols:0,tel:'',pago:false},
+    {num:9,nome:'Marcus Vagner',role:'',gols:0,tel:'',pago:false},{num:10,nome:'Flávio Augusto',role:'',gols:0,tel:'',pago:false},
+    {num:11,nome:'Paulo Roberto Jr',role:'',gols:0,tel:'',pago:false},{num:12,nome:'Heitor Sampaio',role:'',gols:0,tel:'',pago:false}
+  ]},
+  { id:'miami', nome:'Inter Miami', emoji:'🩷⚫', badge:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTEwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibWkxIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwMDAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxYTFhMWEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxwYXRoIGQ9Ik01MCw0IEw5MiwxOCBMOTIsNjIgUTkyLDk1IDUwLDEwNyBROCw5NSA4LDYyIEw4LDE4IFoiIGZpbGw9InVybCgjbWkxKSIgc3Ryb2tlPSIjRjdCNUNEIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8cGF0aCBkPSJNMzUsNjUgUTI4LDQ1IDM4LDMwIFE0MiwyMiA0NiwyOCBRNDAsMzUgNDIsNTAgUTQ0LDYwIDQ4LDY1IFoiIGZpbGw9IiNGN0I1Q0QiLz4KICA8cGF0aCBkPSJNNjUsNjUgUTcyLDQ1IDYyLDMwIFE1OCwyMiA1NCwyOCBRNjAsMzUgNTgsNTAgUTU2LDYwIDUyLDY1IFoiIGZpbGw9IiNGN0I1Q0QiLz4KICA8ZWxsaXBzZSBjeD0iNTAiIGN5PSI2NiIgcng9IjEwIiByeT0iNiIgZmlsbD0iI0Y3QjVDRCIvPgogIDx0ZXh0IHg9IjUwIiB5PSI4MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI0Y3QjVDRCIgZm9udC1zaXplPSI4IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBsZXR0ZXItc3BhY2luZz0iMiI+SU5URVI8L3RleHQ+CiAgPHRleHQgeD0iNTAiIHk9Ijk0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSI3IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBsZXR0ZXItc3BhY2luZz0iMiI+TUlBTUk8L3RleHQ+Cjwvc3ZnPg==', chave:'B', jogadores:[
+    {num:1,nome:'—',role:'goleiro',gols:0,tel:'',pago:false},{num:2,nome:'Ricardo Gonçalves',role:'',gols:0,tel:'',pago:false},
+    {num:3,nome:'Gilson Matias',role:'',gols:0,tel:'',pago:false},{num:4,nome:'Pedro Paulo',role:'capitao',gols:0,tel:'',pago:false},
+    {num:5,nome:'Maicon Thasmo',role:'',gols:0,tel:'',pago:false},{num:6,nome:'João Pedro Almeida',role:'',gols:0,tel:'',pago:false},
+    {num:7,nome:'Leonardo Augusto',role:'',gols:0,tel:'',pago:false},{num:8,nome:'Douglas Ranieri',role:'',gols:0,tel:'',pago:false},
+    {num:9,nome:'Gabriel Costa Souza',role:'',gols:0,tel:'',pago:false},{num:10,nome:'Jhafeth',role:'',gols:0,tel:'',pago:false},
+    {num:11,nome:'Jackson',role:'',gols:0,tel:'',pago:false},{num:12,nome:'Wanderson Magno',role:'',gols:0,tel:'',pago:false}
+  ]},
+  { id:'juventus', nome:'Juventus', emoji:'⚫⚪', badge:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTEwIj4KICA8cGF0aCBkPSJNNTAsNCBMOTIsMTggTDkyLDYyIFE5Miw5NSA1MCwxMDcgUTgsOTUgOCw2MiBMOCwxOCBaIiBmaWxsPSIjMDAwIiBzdHJva2U9IiMzMzMiIHN0cm9rZS13aWR0aD0iMiIvPgogIDxwYXRoIGQ9Ik01MCw0IEw5MiwxOCBMOTIsNjIgUTkyLDk1IDUwLDEwNyBaIiBmaWxsPSJ3aGl0ZSIvPgogIDxsaW5lIHgxPSI1MCIgeTE9IjQiIHgyPSI1MCIgeTI9IjEwNyIgc3Ryb2tlPSIjMzMzIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjIwIiBmaWxsPSIjMDAwIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8dGV4dCB4PSI1MCIgeT0iNTciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjIyIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXN0eWxlPSJpdGFsaWMiPko8L3RleHQ+CiAgPHBvbHlnb24gcG9pbnRzPSI1MCwxMCA1MS41LDE0LjUgNTYsMTQuNSA1Mi41LDE3IDU0LDIxLjUgNTAsMTkuMiA0NiwyMS41IDQ3LjUsMTcgNDQsMTQuNSA0OC41LDE0LjUiIGZpbGw9IiNGRkQ3MDAiLz4KICA8dGV4dCB4PSI1MCIgeT0iOTMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjYuNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iYm9sZCIgbGV0dGVyLXNwYWNpbmc9IjEuNSI+SlVWRU5UVVM8L3RleHQ+Cjwvc3ZnPg==', chave:'B', jogadores:[
+    {num:1,nome:'Léo',role:'goleiro',gols:0,tel:'',pago:false},{num:2,nome:'Adilson Maia',role:'',gols:0,tel:'',pago:false},
+    {num:3,nome:'França',role:'',gols:0,tel:'',pago:false},{num:4,nome:'Elvis',role:'',gols:0,tel:'',pago:false},
+    {num:5,nome:'Fernando Nunes',role:'',gols:0,tel:'',pago:false},{num:6,nome:'Pedro Pires',role:'',gols:0,tel:'',pago:false},
+    {num:7,nome:'Felipe Maia',role:'',gols:0,tel:'',pago:false},{num:8,nome:'Kayo Wilker',role:'',gols:0,tel:'',pago:false},
+    {num:9,nome:'Luan Gabriel',role:'',gols:0,tel:'',pago:false},{num:10,nome:'Renan Silva',role:'',gols:0,tel:'',pago:false},
+    {num:11,nome:'Klisderick',role:'',gols:0,tel:'',pago:false},{num:12,nome:'Vinicius Costa',role:'',gols:0,tel:'',pago:false}
+  ]},
+  { id:'atletico', nome:'Atlético de Madri', emoji:'🔴⚪', badge:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTEwIj4KICA8ZGVmcz4KICAgIDxwYXR0ZXJuIGlkPSJhdG1fcyIgeD0iMCIgeT0iMCIgd2lkdGg9IjE0IiBoZWlnaHQ9IjExMCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICAgIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSI3IiBoZWlnaHQ9IjExMCIgZmlsbD0iI0NCMzUyNCIvPgogICAgICA8cmVjdCB4PSI3IiB5PSIwIiB3aWR0aD0iNyIgaGVpZ2h0PSIxMTAiIGZpbGw9IndoaXRlIi8+CiAgICA8L3BhdHRlcm4+CiAgPC9kZWZzPgogIDxwYXRoIGQ9Ik01MCw0IEw5MiwxOCBMOTIsNjIgUTkyLDk1IDUwLDEwNyBROCw5NSA4LDYyIEw4LDE4IFoiIGZpbGw9InVybCgjYXRtX3MpIiBzdHJva2U9IiMxYTFhMWEiIHN0cm9rZS13aWR0aD0iMi41Ii8+CiAgPHBhdGggZD0iTTgsMTggTDUwLDQgTDkyLDE4IEw5MiwzMCBMOCwzMCBaIiBmaWxsPSIjMWExYTFhIi8+CiAgPHBhdGggZD0iTTgsODIgTDkyLDgyIFE4OCw5OCA1MCwxMDcgUTEyLDk4IDgsODIgWiIgZmlsbD0iIzFhMWExYSIvPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iMjQiIHI9IjEwIiBmaWxsPSIjQ0IzNTI0IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjUwIiB5PSIyOSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiPkE8L3RleHQ+CiAgPHRleHQgeD0iNTAiIHk9IjYzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMWExYTFhIiBmb250LXNpemU9IjE0IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIj5BVE08L3RleHQ+CiAgPHRleHQgeD0iNTAiIHk9Ijk2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSI2IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtd2VpZ2h0PSJib2xkIiBsZXR0ZXItc3BhY2luZz0iMSI+QVRMRVRJQ088L3RleHQ+Cjwvc3ZnPg==', chave:'B', jogadores:[
+    {num:1,nome:'Mateus Cunha',role:'goleiro',gols:0,tel:'',pago:false},{num:2,nome:'Ricardo Dias',role:'capitao',gols:0,tel:'',pago:false},
+    {num:3,nome:'Reinaldo Marcos',role:'',gols:0,tel:'',pago:false},{num:4,nome:'Paulo Henrique Gomes',role:'',gols:0,tel:'',pago:false},
+    {num:5,nome:'Bruno Garcia',role:'',gols:0,tel:'',pago:false},{num:6,nome:'André Felipe',role:'',gols:0,tel:'',pago:false},
+    {num:7,nome:'João Vitor Ferreira',role:'',gols:0,tel:'',pago:false},{num:8,nome:'Samuel Magno',role:'',gols:0,tel:'',pago:false},
+    {num:9,nome:'David dos Santos',role:'',gols:0,tel:'',pago:false},{num:10,nome:'Bruno Leandro',role:'',gols:0,tel:'',pago:false},
+    {num:11,nome:'Naffis',role:'',gols:0,tel:'',pago:false},{num:12,nome:'Jair',role:'',gols:0,tel:'',pago:false}
+  ]}
+];
+
+const JOGOS_DEFAULT = [
+  // Rodada 1 — 13/06/2026
+  {id:1, fase:'Grupos – Rodada 1',data:'13/06/2026',hora:'13:00',teamA:'juventus',teamB:'atletico',golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  {id:2, fase:'Grupos – Rodada 1',data:'13/06/2026',hora:'14:00',teamA:'chelsea', teamB:'miami',   golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  {id:3, fase:'Grupos – Rodada 1',data:'13/06/2026',hora:'15:00',teamA:'mancity', teamB:'la',      golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  {id:4, fase:'Grupos – Rodada 1',data:'13/06/2026',hora:'16:00',teamA:'urawa',   teamB:'borussia',golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  // Rodada 2 — 20/06/2026
+  {id:5, fase:'Grupos – Rodada 2',data:'20/06/2026',hora:'13:00',teamA:'mancity', teamB:'urawa',   golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  {id:6, fase:'Grupos – Rodada 2',data:'20/06/2026',hora:'14:00',teamA:'chelsea', teamB:'atletico',golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  {id:7, fase:'Grupos – Rodada 2',data:'20/06/2026',hora:'15:00',teamA:'la',      teamB:'borussia',golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  {id:8, fase:'Grupos – Rodada 2',data:'20/06/2026',hora:'16:00',teamA:'miami',   teamB:'juventus',golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  // Rodada 3 — 27/06/2026
+  {id:9, fase:'Grupos – Rodada 3',data:'27/06/2026',hora:'13:00',teamA:'la',      teamB:'urawa',   golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  {id:10,fase:'Grupos – Rodada 3',data:'27/06/2026',hora:'14:00',teamA:'miami',   teamB:'atletico',golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  {id:11,fase:'Grupos – Rodada 3',data:'27/06/2026',hora:'15:00',teamA:'chelsea', teamB:'juventus',golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  {id:12,fase:'Grupos – Rodada 3',data:'27/06/2026',hora:'16:00',teamA:'mancity', teamB:'borussia',golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  // Semifinal — 04/07/2026
+  {id:13,fase:'Semifinal',        data:'04/07/2026',hora:'14:00',teamA:'1a',      teamB:'2b',      golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  {id:14,fase:'Semifinal',        data:'04/07/2026',hora:'15:30',teamA:'1b',      teamB:'2a',      golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  // Disputa 3º/4º — 11/07/2026
+  {id:15,fase:'Disputa 3º e 4º Lugar',data:'11/07/2026',hora:'13:30',teamA:'perd13',teamB:'perd14',golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+  // Final — 11/07/2026
+  {id:16,fase:'Final',            data:'11/07/2026',hora:'15:00',teamA:'venc13',  teamB:'venc14',  golA:'',golB:'',encerrado:false,scorersA:[],scorersB:[]},
+];
+
+// ═══════════════════════════════════════════════════════════
+//  ESTADO GLOBAL
+// ═══════════════════════════════════════════════════════════
+let times   = JSON.parse(JSON.stringify(TIMES_DEFAULT));
+let jogos   = JSON.parse(JSON.stringify(JOGOS_DEFAULT));
+let configs = {};
+let fbApp   = null;
+let fbDb    = null;
+let fbListening = false;
+
+// ═══════════════════════════════════════════════════════════
+//  FIREBASE
+// ═══════════════════════════════════════════════════════════
+function fbSalvarConfig() {
+  const raw = document.getElementById('fb-config-inp').value.trim();
+  const msg = document.getElementById('fb-config-msg');
+  try {
+    const cfg = JSON.parse(raw);
+    if (!cfg.apiKey || !cfg.databaseURL) throw new Error('Faltam campos: apiKey e databaseURL são obrigatórios');
+    localStorage.setItem('mundial2026-fb', JSON.stringify(cfg));
+    msg.style.color = 'var(--green-light)';
+    msg.textContent = '✓ Configuração salva! Conectando...';
+    fbIniciar(cfg);
+  } catch(e) {
+    msg.style.color = '#e74c3c';
+    msg.textContent = '✗ JSON inválido: ' + e.message;
+  }
+}
+
+function fbLimparConfig() {
+  if (!confirm('Remover configuração do Firebase?')) return;
+  localStorage.removeItem('mundial2026-fb');
+  document.getElementById('fb-config-inp').value = '';
+  document.getElementById('fb-config-msg').textContent = '';
+  fbSetStatus(false);
+}
+
+function fbIniciar(cfg) {
+  try {
+    if (!fbApp) {
+      fbApp = firebase.initializeApp(cfg);
+    }
+    fbDb = firebase.database();
+    fbDb.ref('.info/connected').on('value', snap => {
+      fbSetStatus(snap.val() === true);
+    });
+    if (!fbListening) {
+      fbListening = true;
+      fbDb.ref('mundial2026').on('value', snapshot => {
+        const data = snapshot.val();
+        if (data) {
+          if (data.jogos)   jogos   = data.jogos;
+          if (data.configs) configs = data.configs;
+          if (data.times) {
+            const remoto = data.times;
+            remoto.forEach(rt => {
+              const def = TIMES_DEFAULT.find(d => d.id === rt.id);
+              if (def) { rt.badge = def.badge; rt.emoji = def.emoji; }
+            });
+            times = remoto;
+          }
+          recalculatePlayerGoals();
+          renderTabela(); renderChaves(); renderTimes(); renderArtilharia();
+          const el = document.getElementById('last-update');
+          if (el) el.textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR');
+        }
+      });
+    }
+  } catch(e) {
+    console.error('Firebase init error:', e);
+    const msg = document.getElementById('fb-config-msg');
+    if (msg) { msg.style.color = '#e74c3c'; msg.textContent = '✗ Erro: ' + e.message; }
+  }
+}
+
+function fbSetStatus(connected) {
+  const bar = document.getElementById('fb-status-bar');
+  const txt = document.getElementById('fb-status-txt');
+  if (!bar) return;
+  bar.className = 'fb-status-bar ' + (connected ? 'connected' : 'disconnected');
+  txt.textContent = connected ? 'Firebase conectado — dados em tempo real' : 'Firebase não conectado';
+}
+
+async function fbSalvar() {
+  if (!fbDb) { showToastAdmin('⚠ Firebase não conectado'); return false; }
+  // Remove badges antes de salvar (economiza banda)
+  const timesParaSalvar = times.map(t => {
+    const { badge, emoji, ...rest } = t;
+    return rest;
+  });
+  try {
+    await fbDb.ref('mundial2026').set({ times: timesParaSalvar, jogos, configs });
+    return true;
+  } catch(e) {
+    showToastAdmin('✗ Erro Firebase: ' + e.message);
+    return false;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════════
+function badgeImg(id, size='sm'){
+  const t=times.find(x=>x.id===id);
+  if(t&&t.badge) return `<img class="badge-img-${size}" src="${t.badge}" alt="${t.nome}" onerror="this.style.display='none'">`;
+  return t?t.emoji:'⚽';
+}
+function timeName(id){ if(!id||/^(venc|perd|[12][ab])/.test(id)) return labelVenc(id); const t=times.find(x=>x.id===id); return t?t.nome:id; }
+function labelVenc(id){
+  if(!id) return '?';
+  const mC=id.match(/^([12])([ab])$/i); if(mC) return `${mC[1]}º Chave ${mC[2].toUpperCase()}`;
+  const mV=id.match(/^venc(\d+)$/); if(mV) return `Vencedor Jogo ${mV[1]}`;
+  const mP=id.match(/^perd(\d+)$/); if(mP) return `Perdedor Jogo ${mP[1]}`;
+  return id;
+}
+function getWinner(j,tA,tB){
+  if(!j.encerrado) return null;
+  const a=parseInt(j.golA),b=parseInt(j.golB);
+  if(a>b) return tA; if(b>a) return tB;
+  if(j.penA!==undefined&&j.penB!==undefined) return parseInt(j.penA)>parseInt(j.penB)?tA:tB;
+  return null;
+}
+function calcStandings(chave){
+  const ids=times.filter(t=>t.chave===chave).map(t=>t.id);
+  const st={}; ids.forEach(id=>{st[id]={pts:0,gf:0,gc:0,j:0};});
+  jogos.filter(j=>j.fase.startsWith('Grupos')&&j.encerrado).forEach(j=>{
+    const tA=j.teamA,tB=j.teamB;
+    if(!st[tA]||!st[tB]) return;
+    const gA=parseInt(j.golA),gB=parseInt(j.golB);
+    st[tA].gf+=gA;st[tA].gc+=gB;st[tA].j++;
+    st[tB].gf+=gB;st[tB].gc+=gA;st[tB].j++;
+    if(gA>gB)st[tA].pts+=3; else if(gB>gA)st[tB].pts+=3; else{st[tA].pts+=1;st[tB].pts+=1;}
+  });
+  return ids.map(id=>({id,...st[id],sg:st[id].gf-st[id].gc})).sort((a,b)=>b.pts-a.pts||b.sg-a.sg||b.gf-a.gf);
+}
+function resolveTeam(id){
+  if(!id) return null;
+  const mC=id.match(/^([12])([ab])$/i);
+  if(mC){ const s=calcStandings(mC[2].toUpperCase()); return s[parseInt(mC[1])-1]?s[parseInt(mC[1])-1].id:null; }
+  const mV=id.match(/^venc(\d+)$/);
+  if(mV){ const j=jogos.find(x=>x.id===+mV[1]); if(!j||!j.encerrado) return null;
+    const tA=resolveTeam(j.teamA),tB=resolveTeam(j.teamB); if(!tA||!tB) return null;
+    return getWinner(j,tA,tB); }
+  const mP=id.match(/^perd(\d+)$/);
+  if(mP){ const j=jogos.find(x=>x.id===+mP[1]); if(!j||!j.encerrado) return null;
+    const tA=resolveTeam(j.teamA),tB=resolveTeam(j.teamB); if(!tA||!tB) return null;
+    const w=getWinner(j,tA,tB); return w===tA?tB:tA; }
+  return id;
+}
+function recalculatePlayerGoals(){
+  times.forEach(t=>t.jogadores.forEach(j=>j.gols=0));
+  jogos.filter(j=>j.encerrado).forEach(j=>{
+    const tA=j.teamA,tB=j.teamB;
+    const teamA=times.find(t=>t.id===tA), teamB=times.find(t=>t.id===tB);
+    const parse=(str,team)=>{
+      if(!str||!team||typeof str!=='string') return;
+      str.split(',').forEach(p=>{
+        const item=p.trim(); if(!item) return;
+        const m=item.match(/^(.*?)(?:\s*\((\d+)\))?$/);
+        if(m){ const name=m[1].trim(), count=parseInt(m[2]||1);
+          const jog=team.jogadores.find(jr=>jr.nome===name); if(jog) jog.gols+=count; }
+      });
+    };
+    parse(j.scorersA,teamA); parse(j.scorersB,teamB);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+//  LOAD DATA
+// ═══════════════════════════════════════════════════════════
+async function loadData(){
+  try {
+    const raw = localStorage.getItem('mundial2026-fb');
+    if (raw) {
+      const cfg = JSON.parse(raw);
+      if (cfg.apiKey && !fbApp) fbIniciar(cfg);
+      const inp = document.getElementById('fb-config-inp');
+      if (inp && !inp.value) inp.value = JSON.stringify(cfg, null, 2);
+      return; // Firebase cuida do resto via listener
+    }
+  } catch(e) { console.error(e); }
+  // Fallback: localStorage local
+  try {
+    const t = localStorage.getItem('mundial2026-times');
+    if (t) {
+      const parsed = JSON.parse(t);
+      if (Array.isArray(parsed)) {
+        times = parsed;
+        times.forEach(team => {
+          const def = TIMES_DEFAULT.find(d => d.id === team.id);
+          if (def) { team.badge = def.badge; team.emoji = def.emoji; }
+          (team.jogadores||[]).forEach(j => {
+            if (j.gols===undefined) j.gols=0;
+            if (!j.tel) j.tel='';
+            if (j.pago===undefined) j.pago=false;
+            if (!j.metodo) j.metodo='';
+          });
+        });
+      }
+    }
+    const j = localStorage.getItem('mundial2026-jogos');
+    if (j) {
+      const parsed = JSON.parse(j);
+      if (Array.isArray(parsed)) { jogos = parsed; jogos.forEach(m=>{if(!m.scorersA)m.scorersA='';if(!m.scorersB)m.scorersB='';}); }
+    }
+    const c = localStorage.getItem('mundial2026-configs');
+    if (c) configs = JSON.parse(c);
+  } catch(e) { console.error(e); }
+  const el = document.getElementById('last-update');
+  if (el) el.textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RENDER PÚBLICO
+// ═══════════════════════════════════════════════════════════
+function renderTabela(){
+  let html=''; let fase='';
+  jogos.forEach(j=>{
+    const tA=resolveTeam(j.teamA)||j.teamA, tB=resolveTeam(j.teamB)||j.teamB;
+    const nameA=tA&&!tA.startsWith('venc')?timeName(tA):labelVenc(j.teamA);
+    const nameB=tB&&!tB.startsWith('venc')?timeName(tB):labelVenc(j.teamB);
+    const winner=j.encerrado?getWinner(j,tA,tB):null;
+    if(j.fase!==fase){ fase=j.fase; const ic=fase==='Final'?'🏆':fase==='Semifinal'?'⚡':'⚽'; html+=`<div class="fase-title">${ic} ${fase}</div>`; }
+    let scorersHTML='';
+    if(j.encerrado&&(j.scorersA||j.scorersB)){
+      scorersHTML=`<div style="font-size:0.75rem;color:rgba(255,255,255,0.3);margin-top:8px;font-family:'Barlow Condensed',sans-serif;line-height:1.3;">
+        ${j.scorersA?`<strong>${timeName(j.teamA)}:</strong> ${j.scorersA}`:''}
+        ${j.scorersA&&j.scorersB?'<br>':''}
+        ${j.scorersB?`<strong>${timeName(j.teamB)}:</strong> ${j.scorersB}`:''}
+      </div>`;
+    }
+    html+=`<div class="jogo-card ${j.encerrado?'encerrado':''}">
+      <div class="jogo-num">${j.id}</div>
+      <div class="jogo-info">
+        <div class="jogo-hora">📅 ${j.data} · ${j.hora} · Recanto Central</div>
+        <div class="jogo-confronto">
+          <span class="team-name ${winner===tA?'winner':''}">${badgeImg(j.teamA,'sm')} ${nameA}</span>
+          ${j.encerrado
+            ?`<div class="placar-box"><span class="placar-num">${j.golA}</span><span class="placar-sep">–</span><span class="placar-num">${j.golB}</span></div>`
+            :`<div class="placar-box"><span class="placar-pending">VS</span></div>`}
+          <span class="team-name right ${winner===tB?'winner':''}">${nameB} ${badgeImg(j.teamB,'sm')}</span>
+        </div>${scorersHTML}
+      </div>
+      <span class="status-pill ${j.encerrado?'encerrado':'pendente'}">${j.encerrado?'ENCERRADO':'PENDENTE'}</span>
+    </div>`;
+  });
+  document.getElementById('tabela-content').innerHTML=html;
+}
+
+function renderChaves(){
+  function makeStandings(chave){
+    const s=calcStandings(chave);
+    const rows=s.map((t,i)=>{
+      const nome=timeName(t.id);
+      const cls=i<2?'style="color:var(--green-light)"':'';
+      return `<tr ${cls}><td>${i+1}</td><td>${badgeImg(t.id,'sm')} ${nome}</td><td>${t.j}</td><td><strong>${t.pts}</strong></td><td>${t.gf}</td><td>${t.gc}</td><td>${t.sg>0?'+'+t.sg:t.sg}</td></tr>`;
+    }).join('');
+    return `<table class="standings-tbl"><thead><tr><th>#</th><th>Time</th><th>J</th><th>P</th><th>GF</th><th>GC</th><th>SG</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+  const ordemA=['mancity','la','urawa','borussia'], ordemB=['chelsea','miami','juventus','atletico'];
+  const timesA=ordemA.map(id=>times.find(t=>t.id===id)).filter(Boolean);
+  const timesB=ordemB.map(id=>times.find(t=>t.id===id)).filter(Boolean);
+  document.getElementById('chaves-content').innerHTML=`
+    <div class="chaves-grid" style="margin-top:4px;margin-bottom:20px">
+      <div class="chave-card chave-a"><h2>CHAVE A</h2>
+        <ul>${timesA.map(t=>`<li><span class="dot"></span>${t.badge?`<img class="badge-img-sm" src="${t.badge}" alt="${t.nome}" onerror="this.style.display='none'">`:t.emoji} ${t.nome}</li>`).join('')}</ul>${makeStandings('A')}</div>
+      <div class="chave-card chave-b"><h2>CHAVE B</h2>
+        <ul>${timesB.map(t=>`<li><span class="dot"></span>${t.badge?`<img class="badge-img-sm" src="${t.badge}" alt="${t.nome}" onerror="this.style.display='none'">`:t.emoji} ${t.nome}</li>`).join('')}</ul>${makeStandings('B')}</div>
+    </div>`;
+}
+
+function renderArtilharia(){
+  const all=[];
+  times.forEach(t=>t.jogadores.forEach(j=>{if(j.gols>0)all.push({...j,teamEmoji:t.emoji,teamBadge:t.badge||'',teamNome:t.nome});}));
+  all.sort((a,b)=>b.gols-a.gols);
+  let html='<div class="fase-title">⚽ Artilharia do Torneio</div>';
+  if(!all.length){ html+='<div style="text-align:center;padding:40px;color:rgba(255,255,255,0.2)">Nenhum gol registrado ainda.</div>'; }
+  else {
+    html+='<div class="chave-card" style="max-width:600px;margin:0 auto"><table class="standings-tbl"><thead><tr><th>#</th><th>Jogador</th><th>Time</th><th>Gols</th></tr></thead><tbody>';
+    all.forEach((p,i)=>{ const bh=p.teamBadge?`<img style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:5px;" src="${p.teamBadge}" alt="">`:p.teamEmoji+' ';
+      html+=`<tr><td>${i+1}</td><td style="text-align:left">${p.nome}</td><td style="text-align:left">${bh}${p.teamNome}</td><td><strong>${p.gols}</strong></td></tr>`; });
+    html+='</tbody></table></div>';
+  }
+  document.getElementById('artilharia-content').innerHTML=html;
+}
+
+function renderTimes(){
+  const ordem=['mancity','la','urawa','borussia','chelsea','miami','juventus','atletico'];
+  const ordenados=ordem.map(id=>times.find(t=>t.id===id)).filter(Boolean);
+  document.getElementById('times-content').innerHTML=`<div class="times-grid">${
+    ordenados.map(t=>`<div class="time-card">
+      <div class="time-header">
+        <div class="time-emoji">${t.badge?`<img class="badge-img-lg" src="${t.badge}" alt="${t.nome}" onerror="this.style.display='none'">`:t.emoji}</div>
+        <div class="time-nome">${t.nome}</div><span class="time-chave">CHAVE ${t.chave}</span>
+      </div>
+      <div class="jogadores-lista">${t.jogadores.map(j=>`
+        <div class="jogador-row">
+          <span class="num">${j.num}</span><span class="nome">${j.nome}</span>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+            <span style="color:var(--gold);font-weight:700;">${j.gols>0?'⚽ '+j.gols:''}</span>
+            ${j.pago?'<span style="font-size:0.65rem;color:var(--green-light);font-weight:700;border:1px solid rgba(18,163,82,0.4);padding:2px 6px;border-radius:4px;">PAGO</span>':''}
+            ${j.role==='goleiro'?'<span class="tag goleiro">GOLEIRO</span>':''}
+            ${j.role==='capitao'?'<span class="tag capitao">CAPITÃO</span>':''}
+          </div>
+        </div>`).join('')}
+      </div></div>`).join('')}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ADMIN — AUTENTICAÇÃO
+// ═══════════════════════════════════════════════════════════
+let admLogado = false;
+const ADM_SENHA_DEFAULT = 'central2026';
+
+function admGetSenha() {
+  return (configs && configs.admSenha) ? configs.admSenha : ADM_SENHA_DEFAULT;
+}
+
+function admLogin() {
+  const inp = document.getElementById('adm-senha-inp');
+  const msg = document.getElementById('adm-lock-msg');
+  if (inp.value === admGetSenha()) {
+    admLogado = true;
+    document.getElementById('adm-lock').style.display = 'none';
+    document.getElementById('adm-panel').style.display = 'block';
+    // Preenche campos de config
+    if (configs.pixKey) document.getElementById('cfg-pix-key').value = configs.pixKey;
+    if (configs.pixValue) document.getElementById('cfg-pix-val').value = configs.pixValue;
+    inp.value = '';
+  } else {
+    msg.textContent = '✗ Senha incorreta';
+    inp.value = '';
+    setTimeout(() => msg.textContent='', 2000);
+  }
+}
+
+function admLogout() {
+  admLogado = false;
+  document.getElementById('adm-lock').style.display = 'flex';
+  document.getElementById('adm-panel').style.display = 'none';
+  document.getElementById('adm-senha-inp').value = '';
+  // Fecha todas as seções
+  document.querySelectorAll('.adm-collapsible').forEach(el => el.classList.remove('open'));
+}
+
+function admToggle(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ADMIN — CONFIGURAÇÕES
+// ═══════════════════════════════════════════════════════════
+async function admSalvarConfig() {
+  const pixKey   = document.getElementById('cfg-pix-key').value.trim();
+  const pixValue = parseFloat(document.getElementById('cfg-pix-val').value) || 0;
+  const novaSenha = document.getElementById('cfg-nova-senha').value.trim();
+  configs.pixKey   = pixKey;
+  configs.pixValue = pixValue;
+  if (novaSenha) configs.admSenha = novaSenha;
+  localStorage.setItem('mundial2026-configs', JSON.stringify(configs));
+  const ok = await fbSalvar();
+  const msg = document.getElementById('cfg-msg');
+  msg.textContent = ok ? '✓ Configurações salvas no Firebase!' : '✓ Salvo localmente (Firebase offline)';
+  setTimeout(() => msg.textContent='', 3000);
+  document.getElementById('cfg-nova-senha').value = '';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ADMIN — GERENCIAR JOGOS
+// ═══════════════════════════════════════════════════════════
+function admRenderJogos() {
+  const container = document.getElementById('adm-jogos-list');
+  let html = '';
+  let fase = '';
+  jogos.forEach(j => {
+    const tA = resolveTeam(j.teamA)||j.teamA, tB = resolveTeam(j.teamB)||j.teamB;
+    const nameA = timeName(tA)||labelVenc(j.teamA), nameB = timeName(tB)||labelVenc(j.teamB);
+    const jogA = (times.find(t=>t.id===tA)||{jogadores:[]}).jogadores.map(p=>p.nome);
+    const jogB = (times.find(t=>t.id===tB)||{jogadores:[]}).jogadores.map(p=>p.nome);
+    if (j.fase !== fase) {
+      fase = j.fase;
+      html += `<div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:3px;color:var(--gold);padding:16px 0 8px;">${fase}</div>`;
+    }
+    html += `<div class="adm-jogo">
+      <div class="adm-jogo-header">
+        <div>
+          <div class="adm-jogo-title">${badgeImg(j.teamA,'sm')} ${nameA} × ${nameB} ${badgeImg(j.teamB,'sm')}</div>
+          <div class="adm-jogo-sub">Jogo ${j.id} · ${j.data} ${j.hora}</div>
+        </div>
+        <label class="adm-toggle">
+          <input type="checkbox" ${j.encerrado?'checked':''} onchange="admToggleEncerrado(${j.id},this.checked)">
+          Encerrado
+        </label>
+      </div>
+      <div class="adm-row">
+        <div class="adm-field">
+          <label>${nameA} — Gols</label>
+          <input type="number" min="0" value="${j.golA||0}" id="gol-a-${j.id}" style="max-width:80px">
+        </div>
+        <div class="adm-field">
+          <label>${nameB} — Gols</label>
+          <input type="number" min="0" value="${j.golB||0}" id="gol-b-${j.id}" style="max-width:80px">
+        </div>
+        <button class="adm-btn" onclick="admSalvarPlacar(${j.id})">💾 Salvar</button>
+      </div>
+      <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:14px;flex-wrap:wrap;">
+        <div>
+          <label style="font-size:0.68rem;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;display:block;margin-bottom:6px;">⚽ Artilheiros ${nameA}</label>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;">
+            ${jogA.map(n=>`<button type="button" class="sc-jogador-btn" onclick="scAdicionarGol('sc-a-${j.id}','${n.replace(/'/g,"\\'")}')">${n}</button>`).join('')}
+          </div>
+          <input type="text" id="sc-a-${j.id}" value="${j.scorersA||''}" placeholder="João, Pedro(2), ..."
+            style="width:100%;background:var(--gray);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:var(--white);font-family:'Barlow',sans-serif;font-size:0.85rem;padding:8px 10px;outline:none;"
+            oninput="scAtualizarTags(${j.id})">
+          <div id="tags-a-${j.id}" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;"></div>
+        </div>
+        <div>
+          <label style="font-size:0.68rem;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;display:block;margin-bottom:6px;">⚽ Artilheiros ${nameB}</label>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;">
+            ${jogB.map(n=>`<button type="button" class="sc-jogador-btn sc-jogador-btn-b" onclick="scAdicionarGol('sc-b-${j.id}','${n.replace(/'/g,"\\'")}')">${n}</button>`).join('')}
+          </div>
+          <input type="text" id="sc-b-${j.id}" value="${j.scorersB||''}" placeholder="João, Pedro(2), ..."
+            style="width:100%;background:var(--gray);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:var(--white);font-family:'Barlow',sans-serif;font-size:0.85rem;padding:8px 10px;outline:none;"
+            oninput="scAtualizarTags(${j.id})">
+          <div id="tags-b-${j.id}" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;"></div>
+        </div>
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+  jogos.forEach(j => { scAtualizarTags(j.id); });
+}
+
+// ── JOGADORES CLICÁVEIS ──
+function scAdicionarGol(inpId, nome) {
+  const inp = document.getElementById(inpId);
+  if (!inp) return;
+  const atual = inp.value.trim();
+  // Verifica se jogador já está na lista
+  const partes = atual ? atual.split(',').map(p => p.trim()) : [];
+  const idx = partes.findIndex(p => p.replace(/\s*\(\d+\)/, '').trim() === nome);
+  if (idx >= 0) {
+    // Já existe — incrementa gols
+    const m = partes[idx].match(/\((\d+)\)/);
+    const gols = m ? parseInt(m[1]) + 1 : 2;
+    partes[idx] = `${nome}(${gols})`;
+  } else {
+    partes.push(nome);
+  }
+  inp.value = partes.join(', ');
+  const match = inpId.match(/sc-([ab])-(\d+)/);
+  if (match) scAtualizarTags(parseInt(match[2]));
+}
+
+function scAtualizarTags(jogoId) {
+  ['a','b'].forEach(lado => {
+    const inp = document.getElementById(`sc-${lado}-${jogoId}`);
+    const container = document.getElementById(`tags-${lado}-${jogoId}`);
+    if (!inp || !container) return;
+    const cor = lado === 'a' ? '18,163,82' : '58,130,247';
+    container.innerHTML = inp.value.split(',').map(p => {
+      const nome = p.replace(/\(.*$/, '').trim();
+      const gols = (p.match(/\((\d+)\)/) || [])[1] || '1';
+      if (!nome) return '';
+      return `<span style="background:rgba(${cor},0.15);border:1px solid rgba(${cor},0.35);border-radius:20px;padding:3px 10px 3px 8px;font-size:0.72rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;display:inline-flex;align-items:center;gap:4px;">
+        ⚽ ${nome}${parseInt(gols)>1?' ×'+gols:''}
+        <span style="cursor:pointer;opacity:0.5;margin-left:2px;" onclick="scRemover('sc-${lado}-${jogoId}',${jogoId},'${nome.replace(/'/g,"\\'")}')">✕</span>
+      </span>`;
+    }).join('');
+  });
+}
+
+function scRemover(inpId, jogoId, nome) {
+  const inp = document.getElementById(inpId);
+  if (!inp) return;
+  const partes = inp.value.split(',').map(p => p.trim()).filter(p => p.replace(/\s*\(\d+\)/, '').trim() !== nome);
+  inp.value = partes.join(', ');
+  scAtualizarTags(jogoId);
+}
+
+function admToggleEncerrado(jogoId, val) {
+  const j = jogos.find(x => x.id === jogoId);
+  if (j) j.encerrado = val;
+}
+
+async function admSalvarPlacar(jogoId) {
+  const j = jogos.find(x => x.id === jogoId);
+  if (!j) return;
+  j.golA = parseInt(document.getElementById('gol-a-'+jogoId).value) || 0;
+  j.golB = parseInt(document.getElementById('gol-b-'+jogoId).value) || 0;
+  j.scorersA = document.getElementById('sc-a-'+jogoId).value.trim();
+  j.scorersB = document.getElementById('sc-b-'+jogoId).value.trim();
+  localStorage.setItem('mundial2026-jogos', JSON.stringify(jogos));
+  recalculatePlayerGoals();
+  renderTabela(); renderChaves(); renderArtilharia();
+  const ok = await fbSalvar();
+  showToastAdmin(ok ? '✓ Placar salvo no Firebase!' : '✓ Salvo localmente');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ADMIN — PAGAMENTOS
+// ═══════════════════════════════════════════════════════════
+function admRenderPagamentos() {
+  const container = document.getElementById('adm-pag-list');
+  let html = '';
+  times.forEach(t => {
+    const temCadastro = t.jogadores.some(j => j.tel);
+    if (!temCadastro) return;
+    html += `<div style="margin-bottom:18px">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:8px">
+        ${t.badge?`<img style="width:22px;height:22px;object-fit:contain;" src="${t.badge}" alt="">`:t.emoji} ${t.nome}
+      </div>`;
+    t.jogadores.forEach((j, idx) => {
+      if (!j.tel) return;
+      html += `<div class="adm-pag-row">
+        <div>
+          <div class="adm-pag-nome">${j.num}. ${j.nome}</div>
+          <div class="adm-pag-met">${j.tel} · ${j.metodo||'—'}</div>
+        </div>
+        <span class="adm-pag-pago ${j.pago?'sim':'nao'}">${j.pago?'PAGO':'PENDENTE'}</span>
+        <button class="adm-btn ${j.pago?'danger sec':''}" style="font-size:0.75rem;padding:6px 12px" 
+          onclick="admTogglePago('${t.id}',${idx})">
+          ${j.pago?'↩ Desfazer':'✓ Confirmar Pago'}
+        </button>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  if (!html) html = '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.2)">Nenhum cadastro recebido ainda.</div>';
+  container.innerHTML = html;
+}
+
+async function admTogglePago(timeId, idx) {
+  const t = times.find(x => x.id === timeId);
+  if (!t) return;
+  t.jogadores[idx].pago = !t.jogadores[idx].pago;
+  localStorage.setItem('mundial2026-times', JSON.stringify(times));
+  const ok = await fbSalvar();
+  showToastAdmin(ok ? '✓ Pagamento atualizado no Firebase!' : '✓ Salvo localmente');
+  admRenderPagamentos();
+  renderTimes();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ADMIN — OUTRAS AÇÕES
+// ═══════════════════════════════════════════════════════════
+async function admPublicarFirebase() {
+  if (!fbDb) { showToastAdmin('⚠ Firebase não configurado'); return; }
+  const ok = await fbSalvar();
+  const msg = document.getElementById('adm-dados-msg');
+  msg.textContent = ok ? '✓ Dados publicados no Firebase com sucesso!' : '✗ Erro ao publicar';
+  setTimeout(() => msg.textContent='', 3000);
+}
+
+async function admResetarJogos() {
+  if (!confirm('Resetar TODOS os jogos para o estado inicial? Esta ação não pode ser desfeita.')) return;
+  jogos = JSON.parse(JSON.stringify(JOGOS_DEFAULT));
+  localStorage.setItem('mundial2026-jogos', JSON.stringify(jogos));
+  recalculatePlayerGoals();
+  renderTabela(); renderChaves(); renderArtilharia();
+  const ok = await fbSalvar();
+  const msg = document.getElementById('adm-dados-msg');
+  msg.style.color = '#e74c3c';
+  msg.textContent = ok ? '⚠ Jogos resetados e publicados no Firebase.' : '⚠ Jogos resetados localmente.';
+  setTimeout(() => { msg.textContent=''; msg.style.color='var(--green-light)'; }, 4000);
+  if (document.getElementById('adm-jogos-section').classList.contains('open')) admRenderJogos();
+}
+
+function showToastAdmin(msg) {
+  const t = document.getElementById('cad-toast');
+  if (t) { t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PRÉ-CADASTRO (jogadores)
+// ═══════════════════════════════════════════════════════════
+let cadState = { timeId: null, jogIdx: null, metodo: null };
+function cadLoadPrecadastro(){ try{const r=localStorage.getItem('mundial2026-precadastro');return r?JSON.parse(r):[];}catch{return [];} }
+function cadSavePrecadastro(list){ localStorage.setItem('mundial2026-precadastro',JSON.stringify(list)); }
+const CAD_STEPS={1:25,2:50,3:75,4:100};
+function cadGoStep(n){
+  document.querySelectorAll('.cad-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('cad-s'+n).classList.add('active');
+  document.getElementById('cad-progress').style.width=CAD_STEPS[n]+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function cadRenderTeams(){
+  const grid=document.getElementById('cad-team-grid'); if(!grid) return;
+  grid.innerHTML='';
+  times.forEach(t=>{
+    const d=document.createElement('div'); d.className='cad-team-card';
+    const icon=t.badge?`<img style="width:42px;height:42px;object-fit:contain;display:block;margin:0 auto 6px;" src="${t.badge}" alt="">`:`<span class="ct-emoji">${t.emoji}</span>`;
+    d.innerHTML=icon+`<span class="ct-nome">${t.nome}</span><span class="ct-chave">Chave ${t.chave}</span>`;
+    d.onclick=()=>cadSelectTime(t.id); grid.appendChild(d);
+  });
+}
+function cadSelectTime(timeId){
+  cadState.timeId=timeId; cadState.jogIdx=null;
+  const t=times.find(x=>x.id===timeId);
+  const preList=cadLoadPrecadastro();
+  const list=document.getElementById('cad-player-list'); list.innerHTML='';
+  t.jogadores.forEach((j,idx)=>{
+    const done=preList.some(p=>p.timeId===timeId&&p.jogIdx===idx);
+    const d=document.createElement('div'); d.className='cad-player-item'+(done?' done':'');
+    let roleHtml='';
+    if(j.role==='goleiro') roleHtml='<span class="cp-role gol">GOL</span>';
+    if(j.role==='capitao') roleHtml='<span class="cp-role cap">CAP</span>';
+    d.innerHTML=`<span class="cp-num">${j.num}</span><span class="cp-nome">${j.nome}</span>${roleHtml}${done?'<span class="cp-done">✓ CADASTRADO</span>':''}`;
+    if(!done) d.onclick=()=>cadSelectJogador(timeId,idx);
+    list.appendChild(d);
+  });
+  cadGoStep(2);
+}
+function cadSelectJogador(timeId,jogIdx){
+  cadState.timeId=timeId; cadState.jogIdx=jogIdx; cadState.metodo=null;
+  const t=times.find(x=>x.id===timeId); const j=t.jogadores[jogIdx];
+  document.getElementById('cad-sel-info').innerHTML=
+    (t.badge?`<img style="width:34px;height:34px;object-fit:contain;flex-shrink:0;" src="${t.badge}" alt="">`:`<span class="csi-emoji">${t.emoji}</span>`)+
+    `<div><div class="csi-team">${t.nome} · Chave ${t.chave}</div><div class="csi-nome">${j.num}. ${j.nome}</div></div>`;
+  document.getElementById('cad-inp-tel').value=j.tel||'';
+  ['cad-btn-pix','cad-btn-cartao','cad-btn-din'].forEach(id=>document.getElementById(id).className='metodo-btn');
+  ['cad-pix-box','cad-cartao-box','cad-din-box'].forEach(id=>document.getElementById(id).classList.remove('show'));
+  const pixKey=(configs&&configs.pixKey)?configs.pixKey.trim():'';
+  document.getElementById('cad-pix-key').textContent=pixKey||'Não configurado';
+  const val=parseFloat((configs&&configs.pixValue)||0);
+  document.getElementById('cad-pix-val').textContent=val>0?'R$ '+val.toFixed(2).replace('.',','):'';
+  cadGoStep(3);
+}
+function cadSelectMetodo(m){
+  cadState.metodo=m;
+  document.getElementById('cad-btn-pix').className='metodo-btn'+(m==='PIX'?' sel-pix':'');
+  document.getElementById('cad-btn-cartao').className='metodo-btn'+(m==='CARTÃO'?' sel-cartao':'');
+  document.getElementById('cad-btn-din').className='metodo-btn'+(m==='DINHEIRO'?' sel-din':'');
+  const pixKey=(configs&&configs.pixKey)?configs.pixKey.trim():'';
+  document.getElementById('cad-pix-box').classList.toggle('show',m==='PIX'&&!!pixKey);
+  document.getElementById('cad-cartao-box').classList.toggle('show',m==='CARTÃO');
+  document.getElementById('cad-din-box').classList.toggle('show',m==='DINHEIRO');
+}
+function cadCopiarPix(){
+  const key=document.getElementById('cad-pix-key').textContent;
+  try{navigator.clipboard.writeText(key);}catch(e){try{const ta=document.createElement('textarea');ta.value=key;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}catch(e2){}}
+  cadShowToast('✓ Chave PIX copiada!');
+}
+async function cadConfirmar(){
+  const tel=document.getElementById('cad-inp-tel').value.trim();
+  if(!tel){cadShowToast('⚠ Informe seu telefone');return;}
+  if(!cadState.metodo){cadShowToast('⚠ Escolha a forma de pagamento');return;}
+  const {timeId,jogIdx,metodo}=cadState;
+  const t=times.find(x=>x.id===timeId); const j=t.jogadores[jogIdx];
+  // Salva no times
+  j.tel=tel; if(!j.metodo) j.metodo=metodo;
+  localStorage.setItem('mundial2026-times',JSON.stringify(times));
+  // Salva precadastro local
+  const preList=cadLoadPrecadastro();
+  const existing=preList.findIndex(p=>p.timeId===timeId&&p.jogIdx===jogIdx);
+  const entry={timeId,jogIdx,nome:j.nome,tel,metodo,ts:Date.now()};
+  if(existing>=0) preList[existing]=entry; else preList.push(entry);
+  cadSavePrecadastro(preList);
+  // Envia ao Firebase
+  await fbSalvar();
+  const metLabels={'PIX':'💚 PIX','CARTÃO':'💳 Cartão','DINHEIRO':'💵 Dinheiro'};
+  const metClass={'PIX':'pix','CARTÃO':'cartao','DINHEIRO':'din'};
+  const metObs={'PIX':'Cadastro registrado! Se já realizou o PIX, aguarde o admin confirmar.','CARTÃO':'Cadastro registrado! Efetue o pagamento com cartão ao organizador.','DINHEIRO':'Cadastro registrado! Entregue o dinheiro ao organizador antes dos jogos.'};
+  document.getElementById('cad-cs-nome').textContent=j.num+'. '+j.nome+'  ·  '+t.nome;
+  const cm=document.getElementById('cad-cs-metodo');
+  cm.textContent=metLabels[metodo]; cm.className='cs-metodo '+metClass[metodo];
+  document.getElementById('cad-cs-obs').textContent=metObs[metodo];
+  cadGoStep(4);
+}
+function cadReset(){ cadState={timeId:null,jogIdx:null,metodo:null}; document.getElementById('cad-inp-tel').value=''; cadRenderTeams(); cadGoStep(1); }
+function cadMaskTel(inp){
+  let v=inp.value.replace(/\D/g,'').substring(0,11);
+  if(v.length>6) v='('+v.substring(0,2)+') '+v.substring(2,7)+'-'+v.substring(7);
+  else if(v.length>2) v='('+v.substring(0,2)+') '+v.substring(2);
+  else if(v.length) v='('+v;
+  inp.value=v;
+}
+function cadShowToast(msg){ const t=document.getElementById('cad-toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+
+// ═══════════════════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════════════════
+function showTab(id,btn){
+  document.querySelectorAll('section').forEach(s=>{s.classList.remove('active');s.style.display='none';});
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  const sec=document.getElementById(id);
+  sec.style.display='block'; sec.classList.add('active');
+  btn.classList.add('active');
+  if(id==='artilharia') renderArtilharia();
+  if(id==='times') renderTimes();
+  if(id==='cadastro') cadRenderTeams();
+  if(id==='admin'){
+    if(!admLogado){ document.getElementById('adm-lock').style.display='flex'; document.getElementById('adm-panel').style.display='none'; }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════
+async function refresh(){
+  if(!fbListening){
+    await loadData();
+    recalculatePlayerGoals();
+    renderTabela(); renderChaves(); renderTimes(); renderArtilharia();
+  }
+}
+// Corrige display inicial das sections
+document.querySelectorAll('section').forEach((s,i)=>{ s.style.display = i===0?'block':'none'; });
+refresh();
+setInterval(refresh, 20000);
+</script>
+<div id="cad-toast"></div>
+</body>
+</html>
