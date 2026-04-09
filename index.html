@@ -265,6 +265,13 @@
   .fb-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
   .connected .fb-dot { background:var(--green-light); animation:pulse 1.5s infinite; }
   .disconnected .fb-dot { background:rgba(255,255,255,0.2); }
+  /* ── BOTÕES JOGADORES ARTILHEIROS ── */
+  .sc-jogador-btn { background:rgba(18,163,82,0.1); border:1px solid rgba(18,163,82,0.3); border-radius:20px; color:var(--white); font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; font-weight:700; padding:4px 10px; cursor:pointer; transition:all .15s; white-space:nowrap; }
+  .sc-jogador-btn:hover { background:rgba(18,163,82,0.3); border-color:var(--green-light); color:var(--white); }
+  .sc-jogador-btn:active { transform:scale(.95); }
+  .sc-jogador-btn-b { background:rgba(58,130,247,0.1); border-color:rgba(58,130,247,0.3); }
+  .sc-jogador-btn-b:hover { background:rgba(58,130,247,0.3); border-color:#3a82f7; }
+
   .adm-section-btn { width:100%; text-align:left; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:8px; color:var(--white); font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; letter-spacing:1px; padding:13px 16px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; transition:background .15s; }
   .adm-section-btn:hover { background:rgba(255,255,255,0.06); }
   .adm-collapsible { display:none; }
@@ -970,6 +977,8 @@ function admRenderJogos() {
   jogos.forEach(j => {
     const tA = resolveTeam(j.teamA)||j.teamA, tB = resolveTeam(j.teamB)||j.teamB;
     const nameA = timeName(tA)||labelVenc(j.teamA), nameB = timeName(tB)||labelVenc(j.teamB);
+    const jogA = (times.find(t=>t.id===tA)||{jogadores:[]}).jogadores.map(p=>p.nome);
+    const jogB = (times.find(t=>t.id===tB)||{jogadores:[]}).jogadores.map(p=>p.nome);
     if (j.fase !== fase) {
       fase = j.fase;
       html += `<div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:3px;color:var(--gold);padding:16px 0 8px;">${fase}</div>`;
@@ -996,19 +1005,79 @@ function admRenderJogos() {
         </div>
         <button class="adm-btn" onclick="admSalvarPlacar(${j.id})">💾 Salvar</button>
       </div>
-      <div class="adm-row">
-        <div class="adm-field">
-          <label>Artilheiros ${nameA} (ex: João, Pedro(2))</label>
-          <input type="text" id="sc-a-${j.id}" value="${j.scorersA||''}" placeholder="Nome, Nome(2), ...">
+      <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:14px;flex-wrap:wrap;">
+        <div>
+          <label style="font-size:0.68rem;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;display:block;margin-bottom:6px;">⚽ Artilheiros ${nameA}</label>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;">
+            ${jogA.map(n=>`<button type="button" class="sc-jogador-btn" onclick="scAdicionarGol('sc-a-${j.id}','${n.replace(/'/g,"\\'")}')">${n}</button>`).join('')}
+          </div>
+          <input type="text" id="sc-a-${j.id}" value="${j.scorersA||''}" placeholder="João, Pedro(2), ..."
+            style="width:100%;background:var(--gray);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:var(--white);font-family:'Barlow',sans-serif;font-size:0.85rem;padding:8px 10px;outline:none;"
+            oninput="scAtualizarTags(${j.id})">
+          <div id="tags-a-${j.id}" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;"></div>
         </div>
-        <div class="adm-field">
-          <label>Artilheiros ${nameB}</label>
-          <input type="text" id="sc-b-${j.id}" value="${j.scorersB||''}" placeholder="Nome, Nome(2), ...">
+        <div>
+          <label style="font-size:0.68rem;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;display:block;margin-bottom:6px;">⚽ Artilheiros ${nameB}</label>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;">
+            ${jogB.map(n=>`<button type="button" class="sc-jogador-btn sc-jogador-btn-b" onclick="scAdicionarGol('sc-b-${j.id}','${n.replace(/'/g,"\\'")}')">${n}</button>`).join('')}
+          </div>
+          <input type="text" id="sc-b-${j.id}" value="${j.scorersB||''}" placeholder="João, Pedro(2), ..."
+            style="width:100%;background:var(--gray);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:var(--white);font-family:'Barlow',sans-serif;font-size:0.85rem;padding:8px 10px;outline:none;"
+            oninput="scAtualizarTags(${j.id})">
+          <div id="tags-b-${j.id}" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;"></div>
         </div>
       </div>
     </div>`;
   });
   container.innerHTML = html;
+  jogos.forEach(j => { scAtualizarTags(j.id); });
+}
+
+// ── JOGADORES CLICÁVEIS ──
+function scAdicionarGol(inpId, nome) {
+  const inp = document.getElementById(inpId);
+  if (!inp) return;
+  const atual = inp.value.trim();
+  // Verifica se jogador já está na lista
+  const partes = atual ? atual.split(',').map(p => p.trim()) : [];
+  const idx = partes.findIndex(p => p.replace(/\s*\(\d+\)/, '').trim() === nome);
+  if (idx >= 0) {
+    // Já existe — incrementa gols
+    const m = partes[idx].match(/\((\d+)\)/);
+    const gols = m ? parseInt(m[1]) + 1 : 2;
+    partes[idx] = `${nome}(${gols})`;
+  } else {
+    partes.push(nome);
+  }
+  inp.value = partes.join(', ');
+  const match = inpId.match(/sc-([ab])-(\d+)/);
+  if (match) scAtualizarTags(parseInt(match[2]));
+}
+
+function scAtualizarTags(jogoId) {
+  ['a','b'].forEach(lado => {
+    const inp = document.getElementById(`sc-${lado}-${jogoId}`);
+    const container = document.getElementById(`tags-${lado}-${jogoId}`);
+    if (!inp || !container) return;
+    const cor = lado === 'a' ? '18,163,82' : '58,130,247';
+    container.innerHTML = inp.value.split(',').map(p => {
+      const nome = p.replace(/\(.*$/, '').trim();
+      const gols = (p.match(/\((\d+)\)/) || [])[1] || '1';
+      if (!nome) return '';
+      return `<span style="background:rgba(${cor},0.15);border:1px solid rgba(${cor},0.35);border-radius:20px;padding:3px 10px 3px 8px;font-size:0.72rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;display:inline-flex;align-items:center;gap:4px;">
+        ⚽ ${nome}${parseInt(gols)>1?' ×'+gols:''}
+        <span style="cursor:pointer;opacity:0.5;margin-left:2px;" onclick="scRemover('sc-${lado}-${jogoId}',${jogoId},'${nome.replace(/'/g,"\\'")}')">✕</span>
+      </span>`;
+    }).join('');
+  });
+}
+
+function scRemover(inpId, jogoId, nome) {
+  const inp = document.getElementById(inpId);
+  if (!inp) return;
+  const partes = inp.value.split(',').map(p => p.trim()).filter(p => p.replace(/\s*\(\d+\)/, '').trim() !== nome);
+  inp.value = partes.join(', ');
+  scAtualizarTags(jogoId);
 }
 
 function admToggleEncerrado(jogoId, val) {
