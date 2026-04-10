@@ -278,6 +278,18 @@
   .adm-collapsible.open { display:block; animation:fadeIn .2s ease; }
 
 
+  /* ── REGULAMENTO ── */
+  .reg-artigo { background: var(--gray2); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 16px 20px; margin-bottom: 14px; }
+  .reg-artigo-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; letter-spacing: 3px; color: var(--gold); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .reg-artigo-titulo::after { content:''; flex:1; height:1px; background: linear-gradient(90deg, rgba(240,192,64,0.3), transparent); }
+  .reg-artigo ul { padding-left: 18px; font-family: 'Barlow', sans-serif; font-size: 0.87rem; color: rgba(255,255,255,0.75); line-height: 1.85; }
+  .reg-artigo ol { padding-left: 18px; font-family: 'Barlow', sans-serif; font-size: 0.87rem; color: rgba(255,255,255,0.75); line-height: 1.85; }
+  .reg-artigo p { font-family: 'Barlow', sans-serif; font-size: 0.87rem; color: rgba(255,255,255,0.75); line-height: 1.8; }
+  .reg-artigo .reg-obs { margin-top: 10px; background: rgba(255,255,255,0.03); border-left: 3px solid var(--gold-dark); border-radius: 0 6px 6px 0; padding: 8px 12px; font-size: 0.82rem; color: rgba(255,255,255,0.5); font-style: italic; }
+  .reg-premio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 10px; margin-top: 10px; }
+  .reg-premio { background: rgba(10,124,62,0.1); border: 1px solid rgba(18,163,82,0.25); border-radius: 8px; padding: 12px; text-align: center; font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--white); }
+  .reg-premio .rp-icon { font-size: 1.8rem; display: block; margin-bottom: 4px; }
+
 </style>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -296,6 +308,7 @@
   <button onclick="showTab('artilharia',this)">⚽ Artilharia</button>
   <button onclick="showTab('times',this)">👕 Times & Elencos</button>
   <button onclick="showTab('cadastro',this)">📋 Cadastro</button>
+  <button onclick="showTab('regulamento',this)">📜 Regulamento</button>
   <button onclick="showTab('admin',this)" id="btn-admin" style="margin-left:auto;opacity:0.3;font-size:0.75rem;padding:10px 14px;">⚙ Admin</button>
 </nav>
 
@@ -388,7 +401,44 @@
 
 
 
+<!-- REGULAMENTO -->
+<section id="regulamento" style="display:none">
+  <div style="max-width:700px;margin:0 auto;">
+
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:4px;color:var(--gold);">📜 REGULAMENTO</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;letter-spacing:2px;color:rgba(255,255,255,0.4);margin-top:4px;">MUNDIAL DE CLUBES CENTRAL 2026 – FUT 7</div>
+      <div style="margin-top:14px;background:rgba(10,124,62,0.12);border:1px solid rgba(18,163,82,0.3);border-radius:10px;padding:14px 18px;font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;color:rgba(255,255,255,0.7);font-style:italic;letter-spacing:0.5px;">
+        "TUDO SEJA FEITO COM DECÊNCIA E ORDEM" — 1° Coríntios 14:40
+      </div>
+    </div>
+
+    <div style="background:rgba(240,192,64,0.08);border:1px solid rgba(240,192,64,0.2);border-radius:10px;padding:16px 20px;margin-bottom:20px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:3px;color:var(--gold);margin-bottom:8px;">🙏 PRIMÍCIAS — PROPÓSITO DO CAMPEONATO</div>
+      <p style="font-family:'Barlow',sans-serif;font-size:0.88rem;line-height:1.7;color:rgba(255,255,255,0.7);">
+        O Mundial de Clubes da Central do Barreiro tem como objetivo a comunhão entre os homens e todos os familiares presentes, promover o esporte aliado aos princípios cristãos: respeito, disciplina, união e fair play. Honrando a DEUS dentro e fora de campo!
+      </p>
+    </div>
+
+    <div style="background:var(--gray2);border:1px solid rgba(192,57,43,0.3);border-radius:10px;padding:16px 20px;margin-bottom:20px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:3px;color:#e74c3c;margin-bottom:10px;">⚠ DA CONDUTA</div>
+      <p style="font-family:'Barlow',sans-serif;font-size:0.88rem;color:rgba(255,255,255,0.7);margin-bottom:8px;">É obrigatório o respeito entre atletas, arbitragem e organização. <strong style="color:var(--white);">Não será tolerado:</strong></p>
+      <ul style="font-family:'Barlow',sans-serif;font-size:0.88rem;color:rgba(255,255,255,0.7);line-height:1.8;padding-left:20px;">
+        <li>Palavrões ou xingamentos → <strong style="color:var(--gold);">cartão amarelo</strong></li>
+        <li>Agressões → <strong style="color:#e74c3c;">exclusão do campeonato sem reposição</strong></li>
+        <li>Deslealdade com risco físico → avaliação da comissão organizadora</li>
+      </ul>
+      <div style="margin-top:10px;font-style:italic;font-size:0.82rem;color:rgba(255,255,255,0.4);">"BEM AVENTURADOS OS PACIFICADORES" — Mateus 5:9</div>
+    </div>
+
+    <!-- Artigos -->
+    <div id="reg-artigos"></div>
+
+  </div>
+</section>
+
 <!-- ADMIN PANEL -->
+
 <section id="admin" style="display:none">
   <!-- LOCK SCREEN -->
   <div class="adm-lock" id="adm-lock">
@@ -1642,9 +1692,152 @@ function showTab(id,btn){
   if(id==='artilharia') renderArtilharia();
   if(id==='times') renderTimes();
   if(id==='cadastro') cadRenderTeams();
+  if(id==='regulamento') renderRegulamento();
   if(id==='admin'){
     if(!admLogado){ document.getElementById('adm-lock').style.display='flex'; document.getElementById('adm-panel').style.display='none'; }
   }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  REGULAMENTO
+// ═══════════════════════════════════════════════════════════
+let regRendered = false;
+function renderRegulamento(){
+  if(regRendered) return;
+  regRendered = true;
+  const artigos = [
+    {
+      num:'1',titulo:'Chaves',
+      html:`<ul>
+        <li><strong style="color:var(--green-light)">Chave A:</strong> Manchester City, Los Angeles, Urawa, Borussia</li>
+        <li><strong style="color:#5a8aee">Chave B:</strong> Chelsea, Inter Miami, Juventus, Atlético de Madri</li>
+      </ul>`
+    },
+    {
+      num:'2',titulo:'Fase Inicial',
+      html:`<ul>
+        <li>Os times jogarão dentro das chaves entre si.</li>
+        <li>Dois tempos de <strong>25 minutos</strong> cada com intervalo de 5 minutos.</li>
+        <li>Tabela divulgada pelo WhatsApp e enviada aos capitães.</li>
+        <li>Pontuação: <strong style="color:var(--green-light)">Vitória = 3 pts</strong> · <strong style="color:var(--gold)">Empate = 1 pt</strong> · <strong style="color:#e74c3c">Derrota = 0 pt</strong></li>
+      </ul>`
+    },
+    {
+      num:'3',titulo:'Classificação',
+      html:`<ul>
+        <li>Classificam para as semifinais as <strong>2 melhores equipes</strong> de cada chave.</li>
+        <li>Confrontos: <strong>1º Chave A × 2º Chave B</strong> e <strong>1º Chave B × 2º Chave A</strong></li>
+      </ul>`
+    },
+    {
+      num:'4',titulo:'Critério de Desempate na 1ª Fase',
+      html:`<ol>
+        <li>Maior número de vitórias</li>
+        <li>Saldo de gols</li>
+        <li>Maior número de gols feitos</li>
+        <li>Confronto direto</li>
+        <li>Menor número de cartões (amarelo, azul e vermelho)</li>
+        <li>Sorteio</li>
+      </ol>`
+    },
+    {
+      num:'5',titulo:'Número de Atletas em Campo',
+      html:`<ul>
+        <li><strong>6 atletas na linha</strong> + <strong>1 goleiro</strong></li>
+        <li>Mínimo para iniciar: <strong>5 atletas</strong> (4 na linha + 1 goleiro)</li>
+        <li>Abaixo do mínimo → derrota por <strong style="color:#e74c3c">3×0 (WO)</strong></li>
+      </ul>`
+    },
+    {
+      num:'6',titulo:'Substituição',
+      html:`<ul>
+        <li>Atleta pode sair e retornar em qualquer momento com a <strong>bola parada</strong> (comunicar o árbitro).</li>
+        <li>Número de substituições: <strong>indeterminado</strong>.</li>
+        <li><strong>Obrigatório</strong> utilizar todos os atletas do banco por pelo menos <strong>5 minutos em cada tempo</strong> (exceto lesionados).</li>
+      </ul>`
+    },
+    {
+      num:'7',titulo:'Faltas',
+      html:`<ul>
+        <li>Faltas acumulam por tempo. A partir da <strong>8ª falta</strong>: cobrança direta sem barreira.</li>
+        <li>No início do 2º tempo as faltas são <strong>zeradas</strong>.</li>
+      </ul>`
+    },
+    {
+      num:'8',titulo:'Punições com Cartões',
+      html:`<ul>
+        <li>🟡 <strong>Cartão Amarelo:</strong> 2 minutos fora. Dois amarelos na fase → suspenso da próxima partida.</li>
+        <li>🔴 <strong>Cartão Vermelho:</strong> Expulsão. Equipe fica com um a menos. Suspenso na próxima partida e não pode orientar do banco (descumprimento → perda de 3 pontos).</li>
+        <li>Cartões <strong>zerados</strong> após a fase de grupos.</li>
+        <li>Briga, palavrões, ofensas → advertência; reincidência → eliminação do campeonato.</li>
+      </ul>`
+    },
+    {
+      num:'9',titulo:'Fases Finais',
+      html:`<ul>
+        <li>Semifinais e finais: <strong>30 minutos</strong> cada tempo, intervalo de 10 minutos.</li>
+        <li>Empate no tempo normal → <strong>pênaltis</strong> (3 cobranças por equipe, alternado até desempate).</li>
+        <li>Somente atletas que terminaram a partida podem cobrar penalidades.</li>
+      </ul>`
+    },
+    {
+      num:'10',titulo:'Uniformes',
+      html:`<ul>
+        <li>Todos devem usar <strong>calção, meião e camisa da mesma cor</strong> (exceto goleiro).</li>
+        <li>Conflito de cores → árbitro define coletes por sorteio.</li>
+        <li><strong>Obrigatório:</strong> caneleira e chuteira de travas de borracha/sintética.</li>
+        <li><strong style="color:#e74c3c">Proibido:</strong> chuteira de travas de aço.</li>
+      </ul>`
+    },
+    {
+      num:'11',titulo:'Horário dos Jogos',
+      html:`<ul>
+        <li>Apresentação: <strong>20 minutos antes</strong> da partida, devidamente uniformizado.</li>
+        <li>Tolerância de <strong>10 minutos</strong> para início. Após isso → WO (3×0).</li>
+      </ul>`
+    },
+    {
+      num:'12',titulo:'Eliminação de Atletas',
+      html:`<p>Atletas que descumprirem as regras poderão ser eliminados do campeonato e suspensos dos próximos. A organização tem poder de decisão conjunta sobre casos graves.</p>`
+    },
+    {
+      num:'13',titulo:'Anulação / Substituição de Atletas',
+      html:`<ul>
+        <li>Atleta lesionado pode ser substituído por lista de espera (mesma faixa etária).</li>
+        <li>Se a lista estiver esgotada, podem ser indicados atletas externos (mesma faixa etária).</li>
+      </ul>
+      <div class="reg-obs">⚠ Troca somente permitida se <strong>dois ou mais atletas</strong> da mesma equipe se lesionarem nos jogos.</div>`
+    },
+    {
+      num:'14',titulo:'Premiações',
+      html:`<div class="reg-premio-grid">
+        <div class="reg-premio"><span class="rp-icon">🥇</span>1º Lugar<br><small style="font-weight:400;color:rgba(255,255,255,0.5)">Troféu + Medalhas</small></div>
+        <div class="reg-premio"><span class="rp-icon">🥈</span>2º Lugar<br><small style="font-weight:400;color:rgba(255,255,255,0.5)">Troféu + Medalhas</small></div>
+        <div class="reg-premio"><span class="rp-icon">🥉</span>3º Lugar<br><small style="font-weight:400;color:rgba(255,255,255,0.5)">Troféu + Medalhas</small></div>
+        <div class="reg-premio"><span class="rp-icon">🧤</span>Melhor Goleiro<br><small style="font-weight:400;color:rgba(255,255,255,0.5)">Entre os 2 goleiros da final</small></div>
+        <div class="reg-premio"><span class="rp-icon">⚽</span>Artilheiro<br><small style="font-weight:400;color:rgba(255,255,255,0.5)">Do campeonato</small></div>
+      </div>`
+    },
+    {
+      num:'15',titulo:'Punição por Aliciamento',
+      html:`<p>Está <strong style="color:#e74c3c">terminantemente proibido</strong> oferecer vantagens para equipes vencerem, empatarem ou perderem. Atleta ou equipe envolvida será <strong>eliminada sem ressarcimento</strong> e poderá ser proibida da próxima competição.</p>`
+    },
+    {
+      num:'16',titulo:'Disposições Finais',
+      html:`<ul>
+        <li>Casos omissos serão analisados pela organização.</li>
+        <li>A inscrição implica na <strong>aceitação integral</strong> deste regulamento.</li>
+      </ul>
+      <div class="reg-obs" style="border-color:var(--green-light);margin-top:12px;text-align:center;font-size:0.9rem;font-style:normal;color:rgba(255,255,255,0.7);">💪 "JUNTOS SOMOS MAIS FORTES"</div>`
+    }
+  ];
+  const container = document.getElementById('reg-artigos');
+  container.innerHTML = artigos.map(a=>`
+    <div class="reg-artigo">
+      <div class="reg-artigo-titulo">Art. ${a.num}º — ${a.titulo}</div>
+      ${a.html}
+    </div>
+  `).join('');
 }
 
 // ═══════════════════════════════════════════════════════════
