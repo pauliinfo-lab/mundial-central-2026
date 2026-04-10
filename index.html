@@ -272,6 +272,17 @@
   .sc-jogador-btn-b { background:rgba(58,130,247,0.1); border-color:rgba(58,130,247,0.3); }
   .sc-jogador-btn-b:hover { background:rgba(58,130,247,0.3); border-color:#3a82f7; }
 
+  /* ── CARTÕES ── */
+  .cartao-amarelo { display:inline-block; width:12px; height:16px; background:#f0c040; border-radius:2px; box-shadow:0 1px 3px rgba(0,0,0,0.4); flex-shrink:0; }
+  .cartao-vermelho { display:inline-block; width:12px; height:16px; background:#c0392b; border-radius:2px; box-shadow:0 1px 3px rgba(0,0,0,0.4); flex-shrink:0; }
+  .cartao-badge { display:inline-flex; align-items:center; gap:3px; font-family:'Barlow Condensed',sans-serif; font-size:0.68rem; font-weight:700; }
+  .cartao-jog-btn { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:20px; color:var(--white); font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; font-weight:700; padding:5px 12px; cursor:pointer; transition:all .15s; white-space:nowrap; display:flex; align-items:center; gap:6px; }
+  .cartao-jog-btn:hover { background:rgba(255,255,255,0.12); }
+  .cartao-tag { display:inline-flex; align-items:center; gap:5px; border-radius:20px; padding:3px 8px 3px 6px; font-size:0.72rem; font-family:'Barlow Condensed',sans-serif; font-weight:700; }
+  .cartao-tag.amarelo { background:rgba(240,192,64,0.15); border:1px solid rgba(240,192,64,0.35); }
+  .cartao-tag.vermelho { background:rgba(192,57,43,0.15); border:1px solid rgba(192,57,43,0.4); }
+  .cartao-tag .ct-remove { background:rgba(255,255,255,0.15); border:none; color:white; width:16px; height:16px; border-radius:50%; cursor:pointer; font-size:0.7rem; line-height:1; padding:0; display:inline-flex; align-items:center; justify-content:center; }
+
   .adm-section-btn { width:100%; text-align:left; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:8px; color:var(--white); font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; letter-spacing:1px; padding:13px 16px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; transition:background .15s; }
   .adm-section-btn:hover { background:rgba(255,255,255,0.06); }
   .adm-collapsible { display:none; }
@@ -583,6 +594,44 @@
         </div>
         <!-- Histórico de substituições -->
         <div id="subs-historico" style="margin-top:18px;"></div>
+      </div>
+    </div>
+
+    <!-- Cartões -->
+    <button class="adm-section-btn" onclick="admToggle('adm-cartoes-section');admRenderCartoes()">
+      🟡🔴 Cartões Amarelo & Vermelho <span>›</span>
+    </button>
+    <div class="adm-collapsible" id="adm-cartoes-section">
+      <div class="adm-card">
+        <h3>🟡🔴 Registrar Cartões</h3>
+        <p style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:16px;line-height:1.6;">
+          Selecione o time e o jogador para registrar cartão amarelo ou vermelho.
+        </p>
+        <!-- Seleção de time -->
+        <div class="adm-row" style="align-items:flex-end;margin-bottom:12px;">
+          <div class="adm-field">
+            <label>Selecione o Time</label>
+            <select id="cart-sel-time" onchange="cartCarregarJogadores()">
+              <option value="">— escolha o time —</option>
+            </select>
+          </div>
+          <div class="adm-field" id="cart-field-jogador" style="display:none">
+            <label>Selecione o Jogador</label>
+            <select id="cart-sel-jogador">
+              <option value="">— escolha o jogador —</option>
+            </select>
+          </div>
+        </div>
+        <!-- Botões de cartão -->
+        <div id="cart-acoes" style="display:none;display:none;">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+            <button class="adm-btn" style="background:rgba(240,192,64,0.2);border-color:var(--gold);color:var(--gold);" onclick="admRegistrarCartao('amarelo')">🟡 Cartão Amarelo</button>
+            <button class="adm-btn" style="background:rgba(192,57,43,0.2);border-color:#e74c3c;color:#e74c3c;" onclick="admRegistrarCartao('vermelho')">🔴 Cartão Vermelho</button>
+          </div>
+        </div>
+        <div id="cart-msg" style="font-size:0.8rem;min-height:18px;color:var(--green-light);margin-bottom:14px;"></div>
+        <!-- Histórico de cartões por time -->
+        <div id="cart-historico"></div>
       </div>
     </div>
 
@@ -935,6 +984,8 @@ async function loadData(){
             if (!j.tel) j.tel='';
             if (j.pago===undefined) j.pago=false;
             if (!j.metodo) j.metodo='';
+            if (j.cartoes_amarelo===undefined) j.cartoes_amarelo=0;
+            if (j.cartoes_vermelho===undefined) j.cartoes_vermelho=0;
           });
         });
       }
@@ -1022,6 +1073,21 @@ function renderArtilharia(){
       html+=`<tr><td>${i+1}</td><td style="text-align:left">${p.nome}</td><td style="text-align:left">${bh}${p.teamNome}</td><td><strong>${p.gols}</strong></td></tr>`; });
     html+='</tbody></table></div>';
   }
+  // Tabela de cartões
+  const allCartoes=[];
+  times.forEach(t=>t.jogadores.forEach(j=>{
+    const am=j.cartoes_amarelo||0, vm=j.cartoes_vermelho||0;
+    if(am+vm>0) allCartoes.push({...j,teamEmoji:t.emoji,teamBadge:t.badge||'',teamNome:t.nome,am,vm});
+  }));
+  allCartoes.sort((a,b)=>(b.vm*2+b.am)-(a.vm*2+a.am));
+  html+='<div class="fase-title" style="margin-top:32px;">🟡🔴 Cartões do Torneio</div>';
+  if(!allCartoes.length){ html+='<div style="text-align:center;padding:30px;color:rgba(255,255,255,0.2)">Nenhum cartão registrado ainda.</div>'; }
+  else {
+    html+='<div class="chave-card" style="max-width:600px;margin:0 auto"><table class="standings-tbl"><thead><tr><th>#</th><th>Jogador</th><th>Time</th><th>🟡</th><th>🔴</th></tr></thead><tbody>';
+    allCartoes.forEach((p,i)=>{ const bh=p.teamBadge?`<img style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:5px;" src="${p.teamBadge}" alt="">`:p.teamEmoji+' ';
+      html+=`<tr><td>${i+1}</td><td style="text-align:left">${p.nome}</td><td style="text-align:left">${bh}${p.teamNome}</td><td><strong style="color:var(--gold)">${p.am||'—'}</strong></td><td><strong style="color:#e74c3c">${p.vm||'—'}</strong></td></tr>`; });
+    html+='</tbody></table></div>';
+  }
   document.getElementById('artilharia-content').innerHTML=html;
 }
 
@@ -1039,6 +1105,8 @@ function renderTimes(){
           <span class="num">${j.num}</span><span class="nome">${j.nome}</span>
           <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
             <span style="color:var(--gold);font-weight:700;">${j.gols>0?'⚽ '+j.gols:''}</span>
+            ${(j.cartoes_amarelo||0)>0?`<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(240,192,64,0.12);border:1px solid rgba(240,192,64,0.3);border-radius:10px;padding:1px 6px;font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;font-weight:700;color:var(--gold);">🟡 ${j.cartoes_amarelo}</span>`:''}
+            ${(j.cartoes_vermelho||0)>0?`<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(192,57,43,0.12);border:1px solid rgba(192,57,43,0.35);border-radius:10px;padding:1px 6px;font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;font-weight:700;color:#e74c3c;">🔴 ${j.cartoes_vermelho}</span>`:''}
             ${j.pago?'<span style="font-size:0.65rem;color:var(--green-light);font-weight:700;border:1px solid rgba(18,163,82,0.4);padding:2px 6px;border-radius:4px;">PAGO</span>':''}
             ${j.role==='goleiro'?'<span class="tag goleiro">GOLEIRO</span>':''}
             ${j.role==='capitao'?'<span class="tag capitao">CAPITÃO</span>':''}
@@ -1838,6 +1906,129 @@ function renderRegulamento(){
       ${a.html}
     </div>
   `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ADMIN — CARTÕES
+// ═══════════════════════════════════════════════════════════
+function admRenderCartoes() {
+  // Popula select de times
+  const sel = document.getElementById('cart-sel-time');
+  sel.innerHTML = '<option value="">— escolha o time —</option>';
+  const ordem = ['mancity','la','urawa','borussia','chelsea','miami','juventus','atletico'];
+  ordem.forEach(id => {
+    const t = times.find(x => x.id === id);
+    if (!t) return;
+    const opt = document.createElement('option');
+    opt.value = t.id; opt.textContent = `${t.nome} — Chave ${t.chave}`;
+    sel.appendChild(opt);
+  });
+  document.getElementById('cart-field-jogador').style.display = 'none';
+  document.getElementById('cart-acoes').style.display = 'none';
+  cartRenderHistorico();
+}
+
+function cartCarregarJogadores() {
+  const timeId = document.getElementById('cart-sel-time').value;
+  const fieldJog = document.getElementById('cart-field-jogador');
+  const acoes = document.getElementById('cart-acoes');
+  if (!timeId) { fieldJog.style.display='none'; acoes.style.display='none'; return; }
+  const t = times.find(x => x.id === timeId);
+  if (!t) return;
+  const sel = document.getElementById('cart-sel-jogador');
+  sel.innerHTML = '<option value="">— escolha o jogador —</option>';
+  t.jogadores.forEach((j, idx) => {
+    const opt = document.createElement('option');
+    opt.value = idx;
+    const am = j.cartoes_amarelo || 0;
+    const vm = j.cartoes_vermelho || 0;
+    const tags = (am > 0 ? ` 🟡×${am}` : '') + (vm > 0 ? ` 🔴×${vm}` : '');
+    opt.textContent = `#${j.num} ${j.nome}${tags}`;
+    sel.appendChild(opt);
+  });
+  sel.onchange = () => {
+    acoes.style.display = sel.value !== '' ? 'block' : 'none';
+  };
+  fieldJog.style.display = 'flex';
+  acoes.style.display = 'none';
+}
+
+async function admRegistrarCartao(tipo) {
+  const timeId = document.getElementById('cart-sel-time').value;
+  const jogIdx = parseInt(document.getElementById('cart-sel-jogador').value);
+  const msg = document.getElementById('cart-msg');
+  if (!timeId) { msg.style.color='#e74c3c'; msg.textContent='⚠ Selecione o time.'; return; }
+  if (isNaN(jogIdx)) { msg.style.color='#e74c3c'; msg.textContent='⚠ Selecione o jogador.'; return; }
+  const t = times.find(x => x.id === timeId);
+  const j = t.jogadores[jogIdx];
+  if (tipo === 'amarelo') {
+    j.cartoes_amarelo = (j.cartoes_amarelo || 0) + 1;
+  } else {
+    j.cartoes_vermelho = (j.cartoes_vermelho || 0) + 1;
+  }
+  // Registra no histórico de cartões
+  if (!configs.cartoes) configs.cartoes = [];
+  configs.cartoes.push({ timeId, timeNome: t.nome, jogNome: j.nome, jogNum: j.num, tipo, ts: Date.now() });
+  localStorage.setItem('mundial2026-times', JSON.stringify(times));
+  localStorage.setItem('mundial2026-configs', JSON.stringify(configs));
+  const ok = await fbSalvar();
+  const icon = tipo === 'amarelo' ? '🟡' : '🔴';
+  msg.style.color = 'var(--green-light)';
+  msg.textContent = ok
+    ? `✓ ${icon} Cartão ${tipo} registrado para ${j.nome} e salvo no Firebase!`
+    : `✓ ${icon} Cartão ${tipo} registrado para ${j.nome} (salvo localmente).`;
+  setTimeout(() => msg.textContent='', 3000);
+  renderTimes();
+  // Atualiza select de jogadores com novos counts
+  cartCarregarJogadores();
+  cartRenderHistorico();
+}
+
+async function admRemoverCartao(timeId, jogIdx, tipo) {
+  const t = times.find(x => x.id === timeId);
+  if (!t) return;
+  const j = t.jogadores[jogIdx];
+  const campo = tipo === 'amarelo' ? 'cartoes_amarelo' : 'cartoes_vermelho';
+  if ((j[campo] || 0) > 0) j[campo]--;
+  localStorage.setItem('mundial2026-times', JSON.stringify(times));
+  const ok = await fbSalvar();
+  showToastAdmin(ok ? '✓ Cartão removido!' : '✓ Cartão removido (local)');
+  renderTimes();
+  cartCarregarJogadores();
+  cartRenderHistorico();
+}
+
+function cartRenderHistorico() {
+  const container = document.getElementById('cart-historico');
+  if (!container) return;
+  // Agrega cartões por time
+  const ordem = ['mancity','la','urawa','borussia','chelsea','miami','juventus','atletico'];
+  const timesComCartao = ordem.map(id => times.find(t=>t.id===id)).filter(t => t && t.jogadores.some(j => (j.cartoes_amarelo||0)+(j.cartoes_vermelho||0)>0));
+  if (!timesComCartao.length) {
+    container.innerHTML = '<div style="text-align:center;padding:16px;color:rgba(255,255,255,0.2);font-size:0.82rem;">Nenhum cartão registrado ainda.</div>';
+    return;
+  }
+  let html = '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:0.85rem;letter-spacing:2px;color:rgba(255,255,255,0.3);margin-bottom:12px;">CARTÕES POR TIME</div>';
+  timesComCartao.forEach(t => {
+    html += `<div style="margin-bottom:16px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+        ${t.badge?`<img style="width:18px;height:18px;object-fit:contain;" src="${t.badge}" alt="">`:t.emoji} ${t.nome}
+      </div>`;
+    t.jogadores.forEach((j, idx) => {
+      const am = j.cartoes_amarelo || 0;
+      const vm = j.cartoes_vermelho || 0;
+      if (am + vm === 0) return;
+      html += `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);flex-wrap:wrap;">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;flex:1;min-width:120px;">#${j.num} ${j.nome}</span>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+          ${am>0?`<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(240,192,64,0.15);border:1px solid rgba(240,192,64,0.3);border-radius:12px;padding:2px 8px;font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;font-weight:700;color:var(--gold);">🟡 ${am} <button onclick="admRemoverCartao('${t.id}',${idx},'amarelo')" style="background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.5);cursor:pointer;width:14px;height:14px;border-radius:50%;font-size:0.65rem;padding:0;line-height:1;display:inline-flex;align-items:center;justify-content:center;">−</button></span>`:''}
+          ${vm>0?`<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(192,57,43,0.15);border:1px solid rgba(192,57,43,0.35);border-radius:12px;padding:2px 8px;font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;font-weight:700;color:#e74c3c;">🔴 ${vm} <button onclick="admRemoverCartao('${t.id}',${idx},'vermelho')" style="background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.5);cursor:pointer;width:14px;height:14px;border-radius:50%;font-size:0.65rem;padding:0;line-height:1;display:inline-flex;align-items:center;justify-content:center;">−</button></span>`:''}
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
 }
 
 // ═══════════════════════════════════════════════════════════
