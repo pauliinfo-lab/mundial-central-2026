@@ -275,13 +275,6 @@
   /* ── CARTÕES ── */
   .cartao-amarelo { display:inline-block; width:12px; height:16px; background:#f0c040; border-radius:2px; box-shadow:0 1px 3px rgba(0,0,0,0.4); flex-shrink:0; }
   .cartao-vermelho { display:inline-block; width:12px; height:16px; background:#c0392b; border-radius:2px; box-shadow:0 1px 3px rgba(0,0,0,0.4); flex-shrink:0; }
-  .cartao-badge { display:inline-flex; align-items:center; gap:3px; font-family:'Barlow Condensed',sans-serif; font-size:0.68rem; font-weight:700; }
-  .cartao-jog-btn { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:20px; color:var(--white); font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; font-weight:700; padding:5px 12px; cursor:pointer; transition:all .15s; white-space:nowrap; display:flex; align-items:center; gap:6px; }
-  .cartao-jog-btn:hover { background:rgba(255,255,255,0.12); }
-  .cartao-tag { display:inline-flex; align-items:center; gap:5px; border-radius:20px; padding:3px 8px 3px 6px; font-size:0.72rem; font-family:'Barlow Condensed',sans-serif; font-weight:700; }
-  .cartao-tag.amarelo { background:rgba(240,192,64,0.15); border:1px solid rgba(240,192,64,0.35); }
-  .cartao-tag.vermelho { background:rgba(192,57,43,0.15); border:1px solid rgba(192,57,43,0.4); }
-  .cartao-tag .ct-remove { background:rgba(255,255,255,0.15); border:none; color:white; width:16px; height:16px; border-radius:50%; cursor:pointer; font-size:0.7rem; line-height:1; padding:0; display:inline-flex; align-items:center; justify-content:center; }
 
   .adm-section-btn { width:100%; text-align:left; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:8px; color:var(--white); font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; letter-spacing:1px; padding:13px 16px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; transition:background .15s; }
   .adm-section-btn:hover { background:rgba(255,255,255,0.06); }
@@ -599,16 +592,15 @@
 
     <!-- Cartões -->
     <button class="adm-section-btn" onclick="admToggle('adm-cartoes-section');admRenderCartoes()">
-      🟡🔴 Cartões Amarelo & Vermelho <span>›</span>
+      🟡🔴 Cartões Amarelo &amp; Vermelho <span>›</span>
     </button>
     <div class="adm-collapsible" id="adm-cartoes-section">
       <div class="adm-card">
         <h3>🟡🔴 Registrar Cartões</h3>
         <p style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:16px;line-height:1.6;">
-          Selecione o time e o jogador para registrar cartão amarelo ou vermelho.
+          Selecione o time e depois o jogador para registrar cartão amarelo ou vermelho.
         </p>
-        <!-- Seleção de time -->
-        <div class="adm-row" style="align-items:flex-end;margin-bottom:12px;">
+        <div class="adm-row" style="align-items:flex-end;margin-bottom:12px;flex-wrap:wrap;">
           <div class="adm-field">
             <label>Selecione o Time</label>
             <select id="cart-sel-time" onchange="cartCarregarJogadores()">
@@ -617,35 +609,47 @@
           </div>
           <div class="adm-field" id="cart-field-jogador" style="display:none">
             <label>Selecione o Jogador</label>
-            <select id="cart-sel-jogador">
+            <select id="cart-sel-jogador" onchange="cartMostrarAcoes()">
               <option value="">— escolha o jogador —</option>
             </select>
           </div>
         </div>
-        <!-- Botões de cartão -->
-        <div id="cart-acoes" style="display:none;display:none;">
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+        <div id="cart-acoes" style="display:none;margin-bottom:12px;">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
             <button class="adm-btn" style="background:rgba(240,192,64,0.2);border-color:var(--gold);color:var(--gold);" onclick="admRegistrarCartao('amarelo')">🟡 Cartão Amarelo</button>
             <button class="adm-btn" style="background:rgba(192,57,43,0.2);border-color:#e74c3c;color:#e74c3c;" onclick="admRegistrarCartao('vermelho')">🔴 Cartão Vermelho</button>
           </div>
         </div>
         <div id="cart-msg" style="font-size:0.8rem;min-height:18px;color:var(--green-light);margin-bottom:14px;"></div>
-        <!-- Histórico de cartões por time -->
         <div id="cart-historico"></div>
       </div>
     </div>
 
     <!-- Dados -->
-    <button class="adm-section-btn" onclick="admToggle('adm-dados-section')">
+    <button class="adm-section-btn" onclick="admToggle('adm-dados-section');admMostrarInfoBackup()">
       🗄 Reset de Dados <span>›</span>
     </button>
     <div class="adm-collapsible" id="adm-dados-section">
       <div class="adm-card">
         <h3>🗄 Dados</h3>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
           <button class="adm-btn" onclick="admPublicarFirebase()">🚀 PUBLICAR TUDO NO FIREBASE</button>
           <button class="adm-btn danger" onclick="admResetarJogos()">⚠ RESETAR JOGOS</button>
           <button class="adm-btn sec" onclick="admLogout()">🔒 Sair do Admin</button>
+        </div>
+        <div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:14px;margin-top:4px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:0.85rem;letter-spacing:2px;color:rgba(255,255,255,0.35);margin-bottom:10px;">💾 BACKUP DE SEGURANÇA</div>
+          <p style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-bottom:10px;line-height:1.6;">
+            Exporte os dados atuais para um arquivo JSON. Ao atualizar o sistema, importe o backup para restaurar tudo.
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="adm-btn" onclick="admExportarBackup()" style="background:rgba(58,130,247,0.15);border-color:#3a82f7;color:#7ab3ff;">📥 EXPORTAR BACKUP (JSON)</button>
+            <label class="adm-btn" style="background:rgba(240,192,64,0.1);border-color:var(--gold);color:var(--gold);cursor:pointer;">
+              📤 IMPORTAR BACKUP
+              <input type="file" accept=".json" style="display:none" onchange="admImportarBackup(event)">
+            </label>
+          </div>
+          <div id="backup-info" style="margin-top:10px;font-size:0.75rem;color:rgba(255,255,255,0.35);"></div>
         </div>
         <div id="adm-dados-msg" style="margin-top:10px;font-size:0.8rem;min-height:18px;color:var(--green-light)"></div>
       </div>
@@ -766,6 +770,7 @@ let configs = {};
 let fbApp   = null;
 let fbDb    = null;
 let fbListening = false;
+let fbDadosCarregados = false; // Proteção: só permite salvar após carregar do Firebase
 
 // ═══════════════════════════════════════════════════════════
 //  FIREBASE
@@ -818,13 +823,26 @@ function fbIniciar(cfg) {
             remoto.forEach(rt => {
               const def = TIMES_DEFAULT.find(d => d.id === rt.id);
               if (def) { rt.badge = def.badge; rt.emoji = def.emoji; }
+              // Garante campos de cartões em todos os jogadores
+              (rt.jogadores||[]).forEach(j => {
+                if (j.cartoes_amarelo === undefined) j.cartoes_amarelo = 0;
+                if (j.cartoes_vermelho === undefined) j.cartoes_vermelho = 0;
+                if (j.gols === undefined) j.gols = 0;
+                if (!j.tel) j.tel = '';
+                if (j.pago === undefined) j.pago = false;
+                if (!j.metodo) j.metodo = '';
+              });
             });
             times = remoto;
           }
+          fbDadosCarregados = true; // Dados carregados do Firebase com sucesso
           recalculatePlayerGoals();
           renderTabela(); renderChaves(); renderTimes(); renderArtilharia();
           const el = document.getElementById('last-update');
           if (el) el.textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR');
+        } else {
+          // Firebase sem dados ainda — libera salvar (primeira vez)
+          fbDadosCarregados = true;
         }
       });
     }
@@ -873,6 +891,11 @@ function atualizarContador(total) {
 
 async function fbSalvar() {
   if (!fbDb) { showToastAdmin('⚠ Firebase não conectado'); return false; }
+  // Proteção anti-sobrescrita: só salva após dados terem sido carregados do Firebase
+  if (!fbDadosCarregados) {
+    showToastAdmin('⏳ Aguardando sincronização com Firebase...');
+    return false;
+  }
   // Remove badges antes de salvar (economiza banda)
   const timesParaSalvar = times.map(t => {
     const { badge, emoji, ...rest } = t;
@@ -880,6 +903,9 @@ async function fbSalvar() {
   });
   try {
     await fbDb.ref('mundial2026').set({ times: timesParaSalvar, jogos, configs });
+    // Salva cópia de segurança no localStorage
+    localStorage.setItem('mundial2026-backup-ts', Date.now().toString());
+    localStorage.setItem('mundial2026-backup', JSON.stringify({ times: timesParaSalvar, jogos, configs }));
     return true;
   } catch(e) {
     showToastAdmin('✗ Erro Firebase: ' + e.message);
@@ -984,8 +1010,6 @@ async function loadData(){
             if (!j.tel) j.tel='';
             if (j.pago===undefined) j.pago=false;
             if (!j.metodo) j.metodo='';
-            if (j.cartoes_amarelo===undefined) j.cartoes_amarelo=0;
-            if (j.cartoes_vermelho===undefined) j.cartoes_vermelho=0;
           });
         });
       }
@@ -1103,7 +1127,7 @@ function renderTimes(){
       <div class="jogadores-lista">${t.jogadores.map(j=>`
         <div class="jogador-row">
           <span class="num">${j.num}</span><span class="nome">${j.nome}</span>
-          <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+          <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
             <span style="color:var(--gold);font-weight:700;">${j.gols>0?'⚽ '+j.gols:''}</span>
             ${(j.cartoes_amarelo||0)>0?`<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(240,192,64,0.12);border:1px solid rgba(240,192,64,0.3);border-radius:10px;padding:1px 6px;font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;font-weight:700;color:var(--gold);">🟡 ${j.cartoes_amarelo}</span>`:''}
             ${(j.cartoes_vermelho||0)>0?`<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(192,57,43,0.12);border:1px solid rgba(192,57,43,0.35);border-radius:10px;padding:1px 6px;font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;font-weight:700;color:#e74c3c;">🔴 ${j.cartoes_vermelho}</span>`:''}
@@ -1501,6 +1525,77 @@ async function admPublicarFirebase() {
   setTimeout(() => msg.textContent='', 3000);
 }
 
+// ── BACKUP / RESTAURAÇÃO ──
+function admExportarBackup() {
+  const timesParaSalvar = times.map(t => { const { badge, emoji, ...rest } = t; return rest; });
+  const backup = { times: timesParaSalvar, jogos, configs, exportadoEm: new Date().toLocaleString('pt-BR'), versao: '2026' };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'mundial2026_backup_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToastAdmin('✓ Backup exportado com sucesso!');
+}
+
+async function admImportarBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const infoEl = document.getElementById('backup-info');
+  try {
+    const text = await file.text();
+    const backup = JSON.parse(text);
+    if (!backup.times || !backup.jogos) throw new Error('Arquivo inválido: faltam times ou jogos');
+    const confirmMsg = `Importar backup de ${backup.exportadoEm || 'data desconhecida'}?
+
+Isso vai SUBSTITUIR todos os dados atuais (gols, cartões, pagamentos, etc).
+
+Tem certeza?`;
+    if (!confirm(confirmMsg)) { event.target.value=''; return; }
+    // Restaura os dados
+    const remoto = backup.times;
+    remoto.forEach(rt => {
+      const def = TIMES_DEFAULT.find(d => d.id === rt.id);
+      if (def) { rt.badge = def.badge; rt.emoji = def.emoji; }
+      (rt.jogadores||[]).forEach(j => {
+        if (j.cartoes_amarelo === undefined) j.cartoes_amarelo = 0;
+        if (j.cartoes_vermelho === undefined) j.cartoes_vermelho = 0;
+        if (j.gols === undefined) j.gols = 0;
+      });
+    });
+    times = remoto;
+    jogos = backup.jogos;
+    configs = backup.configs || {};
+    fbDadosCarregados = true; // Dados restaurados, permitir salvar
+    // Publica no Firebase
+    const ok = await fbSalvar();
+    recalculatePlayerGoals();
+    renderTabela(); renderChaves(); renderTimes(); renderArtilharia();
+    infoEl.style.color = 'var(--green-light)';
+    infoEl.textContent = ok
+      ? `✓ Backup restaurado e publicado no Firebase! (${backup.exportadoEm || ''})`
+      : `✓ Backup restaurado localmente. Firebase offline.`;
+    showToastAdmin('✓ Backup importado!');
+  } catch(e) {
+    infoEl.style.color = '#e74c3c';
+    infoEl.textContent = '✗ Erro ao importar: ' + e.message;
+  }
+  event.target.value = '';
+}
+
+// Mostra info do último backup local ao abrir a seção
+function admMostrarInfoBackup() {
+  const infoEl = document.getElementById('backup-info');
+  if (!infoEl) return;
+  const ts = localStorage.getItem('mundial2026-backup-ts');
+  if (ts) {
+    const d = new Date(parseInt(ts));
+    infoEl.style.color = 'rgba(255,255,255,0.35)';
+    infoEl.textContent = 'Último backup automático: ' + d.toLocaleString('pt-BR');
+  }
+}
+
 async function admResetarJogos() {
   if (!confirm('Resetar TODOS os jogos para o estado inicial? Esta ação não pode ser desfeita.')) return;
   jogos = JSON.parse(JSON.stringify(JOGOS_DEFAULT));
@@ -1767,6 +1862,128 @@ function showTab(id,btn){
 }
 
 // ═══════════════════════════════════════════════════════════
+//  ADMIN — CARTÕES
+// ═══════════════════════════════════════════════════════════
+function admRenderCartoes() {
+  const sel = document.getElementById('cart-sel-time');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— escolha o time —</option>';
+  const ordem = ['mancity','la','urawa','borussia','chelsea','miami','juventus','atletico'];
+  ordem.forEach(function(id) {
+    const t = times.find(function(x){ return x.id === id; });
+    if (!t) return;
+    const opt = document.createElement('option');
+    opt.value = t.id;
+    opt.textContent = t.nome + ' — Chave ' + t.chave;
+    sel.appendChild(opt);
+  });
+  document.getElementById('cart-field-jogador').style.display = 'none';
+  document.getElementById('cart-acoes').style.display = 'none';
+  cartRenderHistorico();
+}
+
+function cartCarregarJogadores() {
+  const timeId = document.getElementById('cart-sel-time').value;
+  const fieldJog = document.getElementById('cart-field-jogador');
+  const acoes = document.getElementById('cart-acoes');
+  if (!timeId) { fieldJog.style.display='none'; acoes.style.display='none'; return; }
+  const t = times.find(function(x){ return x.id === timeId; });
+  if (!t) return;
+  const sel = document.getElementById('cart-sel-jogador');
+  sel.innerHTML = '<option value="">— escolha o jogador —</option>';
+  t.jogadores.forEach(function(j, idx) {
+    const opt = document.createElement('option');
+    opt.value = idx;
+    const am = j.cartoes_amarelo || 0;
+    const vm = j.cartoes_vermelho || 0;
+    opt.textContent = '#' + j.num + ' ' + j.nome + (am>0?' 🟡x'+am:'') + (vm>0?' 🔴x'+vm:'');
+    sel.appendChild(opt);
+  });
+  fieldJog.style.display = 'flex';
+  acoes.style.display = 'none';
+  document.getElementById('cart-msg').textContent = '';
+}
+
+function cartMostrarAcoes() {
+  const val = document.getElementById('cart-sel-jogador').value;
+  document.getElementById('cart-acoes').style.display = val !== '' ? 'block' : 'none';
+}
+
+async function admRegistrarCartao(tipo) {
+  const timeId = document.getElementById('cart-sel-time').value;
+  const jogIdx = parseInt(document.getElementById('cart-sel-jogador').value);
+  const msg = document.getElementById('cart-msg');
+  if (!timeId) { msg.style.color='#e74c3c'; msg.textContent='Selecione o time.'; return; }
+  if (isNaN(jogIdx)) { msg.style.color='#e74c3c'; msg.textContent='Selecione o jogador.'; return; }
+  const t = times.find(function(x){ return x.id === timeId; });
+  const j = t.jogadores[jogIdx];
+  if (tipo === 'amarelo') {
+    j.cartoes_amarelo = (j.cartoes_amarelo || 0) + 1;
+  } else {
+    j.cartoes_vermelho = (j.cartoes_vermelho || 0) + 1;
+  }
+  if (!configs.cartoes) configs.cartoes = [];
+  configs.cartoes.push({ timeId: timeId, timeNome: t.nome, jogNome: j.nome, jogNum: j.num, tipo: tipo, ts: Date.now() });
+  localStorage.setItem('mundial2026-times', JSON.stringify(times));
+  localStorage.setItem('mundial2026-configs', JSON.stringify(configs));
+  const ok = await fbSalvar();
+  const icon = tipo === 'amarelo' ? '🟡' : '🔴';
+  msg.style.color = 'var(--green-light)';
+  msg.textContent = (ok ? 'Cartao ' : 'Cartao (local) ') + icon + ' registrado para ' + j.nome + '!';
+  setTimeout(function(){ msg.textContent=''; }, 3000);
+  renderTimes();
+  cartCarregarJogadores();
+  cartRenderHistorico();
+}
+
+async function admRemoverCartaoFn(timeId, jogIdx, tipo) {
+  const t = times.find(function(x){ return x.id === timeId; });
+  if (!t) return;
+  const j = t.jogadores[jogIdx];
+  const campo = tipo === 'amarelo' ? 'cartoes_amarelo' : 'cartoes_vermelho';
+  if ((j[campo] || 0) > 0) j[campo]--;
+  localStorage.setItem('mundial2026-times', JSON.stringify(times));
+  const ok = await fbSalvar();
+  showToastAdmin(ok ? 'Cartao removido!' : 'Cartao removido (local)');
+  renderTimes(); cartCarregarJogadores(); cartRenderHistorico();
+}
+
+
+function cartRenderHistorico() {
+  const container = document.getElementById('cart-historico');
+  if (!container) return;
+  const ordem = ['mancity','la','urawa','borussia','chelsea','miami','juventus','atletico'];
+  const comCartao = ordem.map(id=>times.find(t=>t.id===id)).filter(t=>t&&t.jogadores.some(j=>(j.cartoes_amarelo||0)+(j.cartoes_vermelho||0)>0));
+  if (!comCartao.length) {
+    container.innerHTML = '<div style="text-align:center;padding:14px;color:rgba(255,255,255,0.2);font-size:0.82rem;">Nenhum cartão registrado ainda.</div>';
+    return;
+  }
+  const headerStyle = "font-family:'Bebas Neue',sans-serif;font-size:0.85rem;letter-spacing:2px;color:rgba(255,255,255,0.3);margin-bottom:10px;border-top:1px solid rgba(255,255,255,0.07);padding-top:12px;";
+  let html = '<div style="' + headerStyle + '">RESUMO DE CARTÕES</div>';
+  comCartao.forEach(t => {
+    const badgeHtml = t.badge ? '<img style="width:16px;height:16px;object-fit:contain;" src="' + t.badge + '" alt="">' : t.emoji;
+    const tStyle = "font-family:'Bebas Neue',sans-serif;font-size:0.95rem;letter-spacing:2px;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:6px;";
+    html += '<div style="margin-bottom:14px;"><div style="' + tStyle + '">' + badgeHtml + ' ' + t.nome + '</div>';
+    t.jogadores.forEach(function(j, idx) {
+      const am = j.cartoes_amarelo || 0, vm = j.cartoes_vermelho || 0;
+      if (am + vm === 0) return;
+      const jStyle = "display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);flex-wrap:wrap;";
+      const nameStyle = "font-family:'Barlow Condensed',sans-serif;font-weight:700;flex:1;min-width:110px;";
+      const amStyle = "display:inline-flex;align-items:center;gap:4px;background:rgba(240,192,64,0.15);border:1px solid rgba(240,192,64,0.3);border-radius:12px;padding:2px 8px;font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;font-weight:700;color:var(--gold);";
+      const vmStyle = "display:inline-flex;align-items:center;gap:4px;background:rgba(192,57,43,0.15);border:1px solid rgba(192,57,43,0.35);border-radius:12px;padding:2px 8px;font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;font-weight:700;color:#e74c3c;";
+      const btnStyle = "background:rgba(255,255,255,0.15);border:none;color:white;cursor:pointer;width:14px;height:14px;border-radius:50%;font-size:0.65rem;padding:0;line-height:1;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;";
+      const btnAm = am > 0 ? '<span style="' + amStyle + '">🟡 ' + am + ' <button onclick="admRemoverCartaoFn(\'' + t.id + '\',' + idx + ',\'amarelo\')" style="' + btnStyle + '">−</button></span>' : '';
+      const btnVm = vm > 0 ? '<span style="' + vmStyle + '">🔴 ' + vm + ' <button onclick="admRemoverCartaoFn(\'' + t.id + '\',' + idx + ',\'vermelho\')" style="' + btnStyle + '">−</button></span>' : '';
+      html += '<div style="' + jStyle + '"><span style="' + nameStyle + '">#' + j.num + ' ' + j.nome + '</span><div style="display:flex;gap:6px;align-items:center;">' + btnAm + btnVm + '</div></div>';
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+
+
+// ═══════════════════════════════════════════════════════════
 //  REGULAMENTO
 // ═══════════════════════════════════════════════════════════
 let regRendered = false;
@@ -1906,129 +2123,6 @@ function renderRegulamento(){
       ${a.html}
     </div>
   `).join('');
-}
-
-// ═══════════════════════════════════════════════════════════
-//  ADMIN — CARTÕES
-// ═══════════════════════════════════════════════════════════
-function admRenderCartoes() {
-  // Popula select de times
-  const sel = document.getElementById('cart-sel-time');
-  sel.innerHTML = '<option value="">— escolha o time —</option>';
-  const ordem = ['mancity','la','urawa','borussia','chelsea','miami','juventus','atletico'];
-  ordem.forEach(id => {
-    const t = times.find(x => x.id === id);
-    if (!t) return;
-    const opt = document.createElement('option');
-    opt.value = t.id; opt.textContent = `${t.nome} — Chave ${t.chave}`;
-    sel.appendChild(opt);
-  });
-  document.getElementById('cart-field-jogador').style.display = 'none';
-  document.getElementById('cart-acoes').style.display = 'none';
-  cartRenderHistorico();
-}
-
-function cartCarregarJogadores() {
-  const timeId = document.getElementById('cart-sel-time').value;
-  const fieldJog = document.getElementById('cart-field-jogador');
-  const acoes = document.getElementById('cart-acoes');
-  if (!timeId) { fieldJog.style.display='none'; acoes.style.display='none'; return; }
-  const t = times.find(x => x.id === timeId);
-  if (!t) return;
-  const sel = document.getElementById('cart-sel-jogador');
-  sel.innerHTML = '<option value="">— escolha o jogador —</option>';
-  t.jogadores.forEach((j, idx) => {
-    const opt = document.createElement('option');
-    opt.value = idx;
-    const am = j.cartoes_amarelo || 0;
-    const vm = j.cartoes_vermelho || 0;
-    const tags = (am > 0 ? ` 🟡×${am}` : '') + (vm > 0 ? ` 🔴×${vm}` : '');
-    opt.textContent = `#${j.num} ${j.nome}${tags}`;
-    sel.appendChild(opt);
-  });
-  sel.onchange = () => {
-    acoes.style.display = sel.value !== '' ? 'block' : 'none';
-  };
-  fieldJog.style.display = 'flex';
-  acoes.style.display = 'none';
-}
-
-async function admRegistrarCartao(tipo) {
-  const timeId = document.getElementById('cart-sel-time').value;
-  const jogIdx = parseInt(document.getElementById('cart-sel-jogador').value);
-  const msg = document.getElementById('cart-msg');
-  if (!timeId) { msg.style.color='#e74c3c'; msg.textContent='⚠ Selecione o time.'; return; }
-  if (isNaN(jogIdx)) { msg.style.color='#e74c3c'; msg.textContent='⚠ Selecione o jogador.'; return; }
-  const t = times.find(x => x.id === timeId);
-  const j = t.jogadores[jogIdx];
-  if (tipo === 'amarelo') {
-    j.cartoes_amarelo = (j.cartoes_amarelo || 0) + 1;
-  } else {
-    j.cartoes_vermelho = (j.cartoes_vermelho || 0) + 1;
-  }
-  // Registra no histórico de cartões
-  if (!configs.cartoes) configs.cartoes = [];
-  configs.cartoes.push({ timeId, timeNome: t.nome, jogNome: j.nome, jogNum: j.num, tipo, ts: Date.now() });
-  localStorage.setItem('mundial2026-times', JSON.stringify(times));
-  localStorage.setItem('mundial2026-configs', JSON.stringify(configs));
-  const ok = await fbSalvar();
-  const icon = tipo === 'amarelo' ? '🟡' : '🔴';
-  msg.style.color = 'var(--green-light)';
-  msg.textContent = ok
-    ? `✓ ${icon} Cartão ${tipo} registrado para ${j.nome} e salvo no Firebase!`
-    : `✓ ${icon} Cartão ${tipo} registrado para ${j.nome} (salvo localmente).`;
-  setTimeout(() => msg.textContent='', 3000);
-  renderTimes();
-  // Atualiza select de jogadores com novos counts
-  cartCarregarJogadores();
-  cartRenderHistorico();
-}
-
-async function admRemoverCartao(timeId, jogIdx, tipo) {
-  const t = times.find(x => x.id === timeId);
-  if (!t) return;
-  const j = t.jogadores[jogIdx];
-  const campo = tipo === 'amarelo' ? 'cartoes_amarelo' : 'cartoes_vermelho';
-  if ((j[campo] || 0) > 0) j[campo]--;
-  localStorage.setItem('mundial2026-times', JSON.stringify(times));
-  const ok = await fbSalvar();
-  showToastAdmin(ok ? '✓ Cartão removido!' : '✓ Cartão removido (local)');
-  renderTimes();
-  cartCarregarJogadores();
-  cartRenderHistorico();
-}
-
-function cartRenderHistorico() {
-  const container = document.getElementById('cart-historico');
-  if (!container) return;
-  // Agrega cartões por time
-  const ordem = ['mancity','la','urawa','borussia','chelsea','miami','juventus','atletico'];
-  const timesComCartao = ordem.map(id => times.find(t=>t.id===id)).filter(t => t && t.jogadores.some(j => (j.cartoes_amarelo||0)+(j.cartoes_vermelho||0)>0));
-  if (!timesComCartao.length) {
-    container.innerHTML = '<div style="text-align:center;padding:16px;color:rgba(255,255,255,0.2);font-size:0.82rem;">Nenhum cartão registrado ainda.</div>';
-    return;
-  }
-  let html = '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:0.85rem;letter-spacing:2px;color:rgba(255,255,255,0.3);margin-bottom:12px;">CARTÕES POR TIME</div>';
-  timesComCartao.forEach(t => {
-    html += `<div style="margin-bottom:16px;">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:8px;">
-        ${t.badge?`<img style="width:18px;height:18px;object-fit:contain;" src="${t.badge}" alt="">`:t.emoji} ${t.nome}
-      </div>`;
-    t.jogadores.forEach((j, idx) => {
-      const am = j.cartoes_amarelo || 0;
-      const vm = j.cartoes_vermelho || 0;
-      if (am + vm === 0) return;
-      html += `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);flex-wrap:wrap;">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;flex:1;min-width:120px;">#${j.num} ${j.nome}</span>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
-          ${am>0?`<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(240,192,64,0.15);border:1px solid rgba(240,192,64,0.3);border-radius:12px;padding:2px 8px;font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;font-weight:700;color:var(--gold);">🟡 ${am} <button onclick="admRemoverCartao('${t.id}',${idx},'amarelo')" style="background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.5);cursor:pointer;width:14px;height:14px;border-radius:50%;font-size:0.65rem;padding:0;line-height:1;display:inline-flex;align-items:center;justify-content:center;">−</button></span>`:''}
-          ${vm>0?`<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(192,57,43,0.15);border:1px solid rgba(192,57,43,0.35);border-radius:12px;padding:2px 8px;font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;font-weight:700;color:#e74c3c;">🔴 ${vm} <button onclick="admRemoverCartao('${t.id}',${idx},'vermelho')" style="background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.5);cursor:pointer;width:14px;height:14px;border-radius:50%;font-size:0.65rem;padding:0;line-height:1;display:inline-flex;align-items:center;justify-content:center;">−</button></span>`:''}
-        </div>
-      </div>`;
-    });
-    html += '</div>';
-  });
-  container.innerHTML = html;
 }
 
 // ═══════════════════════════════════════════════════════════
