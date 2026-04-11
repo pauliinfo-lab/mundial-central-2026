@@ -1597,17 +1597,27 @@ function admMostrarInfoBackup() {
 }
 
 async function admResetarJogos() {
-  if (!confirm('Resetar TODOS os jogos para o estado inicial? Esta ação não pode ser desfeita.')) return;
+  if (!confirm('Resetar TODOS os jogos e cartões para o estado inicial? Esta ação não pode ser desfeita.')) return;
   jogos = JSON.parse(JSON.stringify(JOGOS_DEFAULT));
+  // Zera gols e cartões de todos os jogadores
+  times.forEach(t => t.jogadores.forEach(j => {
+    j.gols = 0;
+    j.cartoes_amarelo = 0;
+    j.cartoes_vermelho = 0;
+  }));
+  if (configs.cartoes) configs.cartoes = [];
   localStorage.setItem('mundial2026-jogos', JSON.stringify(jogos));
+  localStorage.setItem('mundial2026-times', JSON.stringify(times));
+  localStorage.setItem('mundial2026-configs', JSON.stringify(configs));
   recalculatePlayerGoals();
-  renderTabela(); renderChaves(); renderArtilharia();
+  renderTabela(); renderChaves(); renderTimes(); renderArtilharia();
   const ok = await fbSalvar();
   const msg = document.getElementById('adm-dados-msg');
   msg.style.color = '#e74c3c';
-  msg.textContent = ok ? '⚠ Jogos resetados e publicados no Firebase.' : '⚠ Jogos resetados localmente.';
+  msg.textContent = ok ? '⚠ Jogos e cartões resetados e publicados no Firebase.' : '⚠ Jogos e cartões resetados localmente.';
   setTimeout(() => { msg.textContent=''; msg.style.color='var(--green-light)'; }, 4000);
   if (document.getElementById('adm-jogos-section').classList.contains('open')) admRenderJogos();
+  if (document.getElementById('adm-cartoes-section').classList.contains('open')) cartRenderHistorico();
 }
 
 // ═══════════════════════════════════════════════════════════
