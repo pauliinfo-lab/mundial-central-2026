@@ -1535,7 +1535,7 @@ function admRenderJogos() {
         </div>
         <button class="adm-btn" onclick="admSalvarPlacar(${j.id})">💾 Salvar</button>
       </div>
-      <div id="pen-row-${j.id}" style="display:${(parseInt(j.golA||0)===parseInt(j.golB||0)&&j.encerrado)?'block':'none'};margin-bottom:10px;background:rgba(58,130,247,0.07);border:1px solid rgba(58,130,247,0.2);border-radius:8px;padding:12px 14px;">
+      <div id="pen-row-${j.id}" style="display:${(parseInt(j.golA||0)===parseInt(j.golB||0)&&j.encerrado&&!j.fase.startsWith('Grupos'))?'block':'none'};margin-bottom:10px;background:rgba(58,130,247,0.07);border:1px solid rgba(58,130,247,0.2);border-radius:8px;padding:12px 14px;">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:1.5px;color:#7ab3ff;margin-bottom:8px;">🥅 PÊNALTIS (Art. 9 — Empate no tempo normal)</div>
         <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
           <div class="adm-field">
@@ -1770,10 +1770,10 @@ function admCheckEmpate(jogoId) {
   const penRow = document.getElementById('pen-row-'+jogoId);
   if (!golAEl || !golBEl || !penRow) return;
   const j = jogos.find(x => x.id === jogoId);
-  // j.encerrado é atualizado pelo admToggleEncerrado antes desta chamada
   const enc = j ? !!j.encerrado : false;
+  const faseComPen = j ? !j.fase.startsWith('Grupos') : false;
   const empate = parseInt(golAEl.value||0) === parseInt(golBEl.value||0);
-  penRow.style.display = (empate && enc) ? 'block' : 'none';
+  penRow.style.display = (empate && enc && faseComPen) ? 'block' : 'none';
 }
 
 async function admSalvarPlacar(jogoId) {
@@ -1793,10 +1793,11 @@ async function admSalvarPlacar(jogoId) {
   j.golB = golB;
   j.scorersA = scorersA;
   j.scorersB = scorersB;
-  if (golA === golB && j.encerrado && penAVal !== '' && penBVal !== '') {
+  const faseComPen = !j.fase.startsWith('Grupos');
+  if (faseComPen && golA === golB && j.encerrado && penAVal !== '' && penBVal !== '') {
     j.penA = parseInt(penAVal);
     j.penB = parseInt(penBVal);
-  } else if (golA !== golB) {
+  } else if (!faseComPen || golA !== golB) {
     delete j.penA; delete j.penB;
   }
   // 3. Agora salva e renderiza
