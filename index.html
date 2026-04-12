@@ -1770,7 +1770,8 @@ function admCheckEmpate(jogoId) {
   const penRow = document.getElementById('pen-row-'+jogoId);
   if (!golAEl || !golBEl || !penRow) return;
   const j = jogos.find(x => x.id === jogoId);
-  const enc = j ? j.encerrado : false;
+  // j.encerrado é atualizado pelo admToggleEncerrado antes desta chamada
+  const enc = j ? !!j.encerrado : false;
   const empate = parseInt(golAEl.value||0) === parseInt(golBEl.value||0);
   penRow.style.display = (empate && enc) ? 'block' : 'none';
 }
@@ -1778,20 +1779,27 @@ function admCheckEmpate(jogoId) {
 async function admSalvarPlacar(jogoId) {
   const j = jogos.find(x => x.id === jogoId);
   if (!j) return;
-  j.golA = parseInt(document.getElementById('gol-a-'+jogoId).value) || 0;
-  j.golB = parseInt(document.getElementById('gol-b-'+jogoId).value) || 0;
-  j.scorersA = document.getElementById('sc-a-'+jogoId).value.trim();
-  j.scorersB = document.getElementById('sc-b-'+jogoId).value.trim();
-  // Pênaltis — salva só se for empate encerrado e campos preenchidos
+  // 1. Lê todos os valores ANTES de qualquer render
+  const golA = parseInt(document.getElementById('gol-a-'+jogoId).value) || 0;
+  const golB = parseInt(document.getElementById('gol-b-'+jogoId).value) || 0;
+  const scorersA = document.getElementById('sc-a-'+jogoId).value.trim();
+  const scorersB = document.getElementById('sc-b-'+jogoId).value.trim();
   const penAEl = document.getElementById('pen-a-'+jogoId);
   const penBEl = document.getElementById('pen-b-'+jogoId);
-  if (penAEl && penBEl && j.golA === j.golB && j.encerrado) {
-    const pA = penAEl.value.trim();
-    const pB = penBEl.value.trim();
-    if (pA !== '' && pB !== '') { j.penA = parseInt(pA); j.penB = parseInt(pB); }
-  } else if (j.golA !== j.golB) {
+  const penAVal = penAEl ? penAEl.value.trim() : '';
+  const penBVal = penBEl ? penBEl.value.trim() : '';
+  // 2. Aplica ao objeto
+  j.golA = golA;
+  j.golB = golB;
+  j.scorersA = scorersA;
+  j.scorersB = scorersB;
+  if (golA === golB && j.encerrado && penAVal !== '' && penBVal !== '') {
+    j.penA = parseInt(penAVal);
+    j.penB = parseInt(penBVal);
+  } else if (golA !== golB) {
     delete j.penA; delete j.penB;
   }
+  // 3. Agora salva e renderiza
   localStorage.setItem('mundial2026-jogos', JSON.stringify(jogos));
   recalculatePlayerGoals();
   renderTabela(); renderChaves(); renderArtilharia();
