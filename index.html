@@ -1155,7 +1155,11 @@ function renderTabela(){
         <div class="jogo-confronto">
           <span class="team-name ${winner===tA?'winner':''}">${badgeImg(j.teamA,'sm')} ${nameA}</span>
           ${j.encerrado
-            ?`<div class="placar-box"><span class="placar-num">${j.golA}</span><span class="placar-sep">–</span><span class="placar-num">${j.golB}</span></div>`
+            ?`<div class="placar-box">
+                <span class="placar-num">${j.golA}</span>
+                <span class="placar-sep">–</span>
+                <span class="placar-num">${j.golB}</span>
+              </div>${(j.penA!==undefined&&j.penB!==undefined)?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;color:rgba(58,130,247,0.8);letter-spacing:1px;margin-left:4px;white-space:nowrap;">(PEN ${j.penA}–${j.penB})</div>`:''}` 
             :`<div class="placar-box"><span class="placar-pending">VS</span></div>`}
           <span class="team-name right ${winner===tB?'winner':''}">${nameB} ${badgeImg(j.teamB,'sm')}</span>
         </div>${scorersHTML}
@@ -1523,13 +1527,27 @@ function admRenderJogos() {
       <div class="adm-row">
         <div class="adm-field">
           <label>${nameA} — Gols</label>
-          <input type="number" min="0" value="${j.golA||0}" id="gol-a-${j.id}" style="max-width:80px">
+          <input type="number" min="0" value="${j.golA||0}" id="gol-a-${j.id}" style="max-width:80px" oninput="admCheckEmpate(${j.id})">
         </div>
         <div class="adm-field">
           <label>${nameB} — Gols</label>
-          <input type="number" min="0" value="${j.golB||0}" id="gol-b-${j.id}" style="max-width:80px">
+          <input type="number" min="0" value="${j.golB||0}" id="gol-b-${j.id}" style="max-width:80px" oninput="admCheckEmpate(${j.id})">
         </div>
         <button class="adm-btn" onclick="admSalvarPlacar(${j.id})">💾 Salvar</button>
+      </div>
+      <div id="pen-row-${j.id}" style="display:${(parseInt(j.golA||0)===parseInt(j.golB||0)&&j.encerrado)?'block':'none'};margin-bottom:10px;background:rgba(58,130,247,0.07);border:1px solid rgba(58,130,247,0.2);border-radius:8px;padding:12px 14px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:1.5px;color:#7ab3ff;margin-bottom:8px;">🥅 PÊNALTIS (Art. 9 — Empate no tempo normal)</div>
+        <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+          <div class="adm-field">
+            <label style="color:#7ab3ff">${nameA} — Cobranças convertidas</label>
+            <input type="number" min="0" value="${j.penA!==undefined?j.penA:''}" id="pen-a-${j.id}" placeholder="0" style="max-width:80px">
+          </div>
+          <div class="adm-field">
+            <label style="color:#7ab3ff">${nameB} — Cobranças convertidas</label>
+            <input type="number" min="0" value="${j.penB!==undefined?j.penB:''}" id="pen-b-${j.id}" placeholder="0" style="max-width:80px">
+          </div>
+        </div>
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:6px;font-family:'Barlow Condensed',sans-serif;">3 cobranças por equipe, alternado até desempate. Salve o placar para registrar.</div>
       </div>
       <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
         <div>
@@ -1743,6 +1761,18 @@ function scAtualizarTags(jogoId) {
 function admToggleEncerrado(jogoId, val) {
   const j = jogos.find(x => x.id === jogoId);
   if (j) j.encerrado = val;
+  admCheckEmpate(jogoId);
+}
+
+function admCheckEmpate(jogoId) {
+  const golAEl = document.getElementById('gol-a-'+jogoId);
+  const golBEl = document.getElementById('gol-b-'+jogoId);
+  const penRow = document.getElementById('pen-row-'+jogoId);
+  if (!golAEl || !golBEl || !penRow) return;
+  const j = jogos.find(x => x.id === jogoId);
+  const enc = j ? j.encerrado : false;
+  const empate = parseInt(golAEl.value||0) === parseInt(golBEl.value||0);
+  penRow.style.display = (empate && enc) ? 'block' : 'none';
 }
 
 async function admSalvarPlacar(jogoId) {
@@ -1752,12 +1782,21 @@ async function admSalvarPlacar(jogoId) {
   j.golB = parseInt(document.getElementById('gol-b-'+jogoId).value) || 0;
   j.scorersA = document.getElementById('sc-a-'+jogoId).value.trim();
   j.scorersB = document.getElementById('sc-b-'+jogoId).value.trim();
+  // Pênaltis — salva só se for empate encerrado e campos preenchidos
+  const penAEl = document.getElementById('pen-a-'+jogoId);
+  const penBEl = document.getElementById('pen-b-'+jogoId);
+  if (penAEl && penBEl && j.golA === j.golB && j.encerrado) {
+    const pA = penAEl.value.trim();
+    const pB = penBEl.value.trim();
+    if (pA !== '' && pB !== '') { j.penA = parseInt(pA); j.penB = parseInt(pB); }
+  } else if (j.golA !== j.golB) {
+    delete j.penA; delete j.penB;
+  }
   localStorage.setItem('mundial2026-jogos', JSON.stringify(jogos));
   recalculatePlayerGoals();
   renderTabela(); renderChaves(); renderArtilharia();
   const ok = await fbSalvar();
   showToastAdmin(ok ? '✓ Placar salvo no Firebase!' : '✓ Salvo localmente');
-  // Atualiza os botões e contadores de todos os jogos
   admRenderJogos();
 }
 
