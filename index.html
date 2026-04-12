@@ -282,6 +282,19 @@
   .adm-collapsible.open { display:block; animation:fadeIn .2s ease; }
 
 
+  /* ── AVISO / COMUNICADO ── */
+  #aviso-banner { display:none; margin:10px 16px 0; border-radius:8px; padding:12px 18px; background:rgba(240,192,64,0.12); border:1px solid rgba(240,192,64,0.4); font-family:'Barlow Condensed',sans-serif; font-size:0.95rem; color:var(--gold); letter-spacing:0.5px; line-height:1.5; animation:fadeIn .3s ease; }
+  #aviso-banner .aviso-label { font-size:0.65rem; font-weight:700; letter-spacing:2px; color:rgba(240,192,64,0.6); margin-bottom:4px; }
+  #aviso-banner .aviso-texto { font-weight:600; }
+
+  /* ── SUSPENSOS ── */
+  .suspenso-card { display:flex; align-items:center; gap:10px; padding:8px 14px; background:rgba(192,57,43,0.08); border:1px solid rgba(192,57,43,0.25); border-radius:8px; margin-bottom:8px; font-family:'Barlow Condensed',sans-serif; }
+  .suspenso-nome { font-size:1rem; font-weight:700; flex:1; }
+  .suspenso-time { font-size:0.75rem; color:rgba(255,255,255,0.4); }
+  .suspenso-motivo { font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:10px; }
+  .suspenso-motivo.am { background:rgba(240,192,64,0.18); color:var(--gold); border:1px solid rgba(240,192,64,0.35); }
+  .suspenso-motivo.vm { background:rgba(192,57,43,0.2); color:#e74c3c; border:1px solid rgba(192,57,43,0.4); }
+
   /* ── REGULAMENTO ── */
   .reg-artigo { background: var(--gray2); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 16px 20px; margin-bottom: 14px; }
   .reg-artigo-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; letter-spacing: 3px; color: var(--gold); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
@@ -307,6 +320,12 @@
   <p class="sub">Recanto Central · 23 de Maio de 2026</p>
 </header>
 
+<!-- BANNER DE AVISO / COMUNICADO -->
+<div id="aviso-banner">
+  <div class="aviso-label">📢 COMUNICADO DA ORGANIZAÇÃO</div>
+  <div class="aviso-texto" id="aviso-texto-pub"></div>
+</div>
+
 <nav>
   <button class="active" onclick="showTab('tabela',this)">📅 Tabela de Jogos</button>
   <button onclick="showTab('artilharia',this)">⚽ Artilharia</button>
@@ -327,7 +346,13 @@
     <div id="tabela-content"></div>
   </section>
   <section id="artilharia"><div id="artilharia-content"></div></section>
-  <section id="times"><div id="times-content"></div></section>
+  <section id="times">
+    <div id="suspensos-pub-wrap" style="display:none;max-width:700px;margin:0 auto 20px;">
+      <div class="fase-title">🚫 Suspensos da Próxima Rodada</div>
+      <div id="suspensos-pub-lista"></div>
+    </div>
+    <div id="times-content"></div>
+  </section>
 </main>
 
 
@@ -625,6 +650,83 @@
       </div>
     </div>
 
+    <!-- Comunicado / Aviso -->
+    <button class="adm-section-btn" onclick="admToggle('adm-aviso-section');admRenderAviso()">
+      📢 Comunicado / Aviso <span>›</span>
+    </button>
+    <div class="adm-collapsible" id="adm-aviso-section">
+      <div class="adm-card">
+        <h3>📢 Comunicado para os Jogadores</h3>
+        <p style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:14px;line-height:1.6;">
+          Aparece em destaque para todos os usuários no topo da página. Deixe em branco para ocultar o aviso.
+        </p>
+        <div class="adm-field" style="margin-bottom:12px">
+          <label>Mensagem do Aviso</label>
+          <textarea id="aviso-inp" placeholder="Ex: Jogo de hoje atrasado 30 min. Novo horário: 15h. Convocação de capitães às 14h30 no Recanto."></textarea>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="adm-btn" onclick="admSalvarAviso()">💾 PUBLICAR AVISO</button>
+          <button class="adm-btn danger sec" onclick="admLimparAviso()">✕ Remover Aviso</button>
+        </div>
+        <div id="aviso-msg" style="margin-top:10px;font-size:0.8rem;min-height:18px;color:var(--green-light)"></div>
+        <div id="aviso-preview" style="display:none;margin-top:14px;"></div>
+      </div>
+    </div>
+
+    <!-- Suspensos Automáticos -->
+    <button class="adm-section-btn" onclick="admToggle('adm-suspensos-section');admRenderSuspensos()">
+      🚫 Suspensos Automáticos <span>›</span>
+    </button>
+    <div class="adm-collapsible" id="adm-suspensos-section">
+      <div class="adm-card">
+        <h3>🚫 Suspensos da Próxima Rodada</h3>
+        <p style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:16px;line-height:1.6;">
+          Calculado automaticamente conforme o Art. 8º: <strong style="color:var(--gold)">2 cartões amarelos</strong> ou <strong style="color:#e74c3c">1 cartão vermelho</strong> = suspenso da próxima partida.
+        </p>
+        <div id="adm-suspensos-lista"></div>
+        <p style="font-size:0.72rem;color:rgba(255,255,255,0.3);margin-top:10px;line-height:1.6;">
+          ⚠ Após a suspensão ser cumprida, remova o(s) cartão(ões) do jogador na seção <strong>Cartões</strong> para que ele saia desta lista.
+        </p>
+      </div>
+    </div>
+
+    <!-- WO -->
+    <button class="adm-section-btn" onclick="admToggle('adm-wo-section');admRenderWO()">
+      ⚠ Declarar W.O. <span>›</span>
+    </button>
+    <div class="adm-collapsible" id="adm-wo-section">
+      <div class="adm-card">
+        <h3>⚠ Declarar W.O. (Art. 5 e Art. 11)</h3>
+        <p style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:16px;line-height:1.6;">
+          Declara derrota automática por <strong style="color:#e74c3c">3×0</strong> para o time que não compareceu ou ficou abaixo do mínimo de atletas.
+        </p>
+        <div class="adm-row" style="align-items:flex-end;flex-wrap:wrap;">
+          <div class="adm-field">
+            <label>Jogo</label>
+            <select id="wo-sel-jogo" onchange="woCarregarTimes()">
+              <option value="">— selecione o jogo —</option>
+            </select>
+          </div>
+          <div class="adm-field" id="wo-field-time" style="display:none">
+            <label>Time que levou W.O.</label>
+            <select id="wo-sel-time">
+              <option value="">— quem perdeu? —</option>
+            </select>
+          </div>
+        </div>
+        <div class="adm-field" style="margin-bottom:12px">
+          <label>Motivo (opcional)</label>
+          <select id="wo-motivo">
+            <option value="Abaixo do mínimo de atletas (Art. 5)">Abaixo do mínimo de atletas (Art. 5)</option>
+            <option value="Não comparecimento após tolerância de 10 min (Art. 11)">Não comparecimento — tolerância de 10 min (Art. 11)</option>
+            <option value="Outro motivo">Outro motivo</option>
+          </select>
+        </div>
+        <button class="adm-btn danger" onclick="admDeclararWO()" style="background:rgba(192,57,43,0.25);border-color:#e74c3c;color:#e74c3c;">⚠ CONFIRMAR W.O. — PLACAR 3×0</button>
+        <div id="wo-msg" style="margin-top:10px;font-size:0.8rem;min-height:18px;color:var(--green-light)"></div>
+      </div>
+    </div>
+
     <!-- Dados -->
     <button class="adm-section-btn" onclick="admToggle('adm-dados-section');admMostrarInfoBackup()">
       🗄 Reset de Dados <span>›</span>
@@ -838,6 +940,7 @@ function fbIniciar(cfg) {
           fbDadosCarregados = true; // Dados carregados do Firebase com sucesso
           recalculatePlayerGoals();
           renderTabela(); renderChaves(); renderTimes(); renderArtilharia();
+          renderAvisoBanner();
           const el = document.getElementById('last-update');
           if (el) el.textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR');
         } else {
@@ -1057,7 +1160,7 @@ function renderTabela(){
           <span class="team-name right ${winner===tB?'winner':''}">${nameB} ${badgeImg(j.teamB,'sm')}</span>
         </div>${scorersHTML}
       </div>
-      <span class="status-pill ${j.encerrado?'encerrado':'pendente'}">${j.encerrado?'ENCERRADO':'PENDENTE'}</span>
+      <span class="status-pill ${j.encerrado?'encerrado':'pendente'}">${j.wo?'W.O.':j.encerrado?'ENCERRADO':'PENDENTE'}</span>
     </div>`;
   });
   document.getElementById('tabela-content').innerHTML=html;
@@ -1116,6 +1219,8 @@ function renderArtilharia(){
 }
 
 function renderTimes(){
+  const suspensos = calcSuspensos();
+  renderSuspensosPublico(suspensos);
   const ordem=['mancity','la','urawa','borussia','chelsea','miami','juventus','atletico'];
   const ordenados=ordem.map(id=>times.find(t=>t.id===id)).filter(Boolean);
   document.getElementById('times-content').innerHTML=`<div class="times-grid">${
@@ -1179,6 +1284,192 @@ function admLogout() {
 function admToggle(id) {
   const el = document.getElementById(id);
   el.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ADMIN — COMUNICADO / AVISO
+// ═══════════════════════════════════════════════════════════
+function admRenderAviso() {
+  const inp = document.getElementById('aviso-inp');
+  if (inp && configs.aviso) inp.value = configs.aviso;
+  renderAvisoBanner();
+}
+
+async function admSalvarAviso() {
+  const texto = document.getElementById('aviso-inp').value.trim();
+  configs.aviso = texto;
+  localStorage.setItem('mundial2026-configs', JSON.stringify(configs));
+  const ok = await fbSalvar();
+  const msg = document.getElementById('aviso-msg');
+  msg.style.color = 'var(--green-light)';
+  msg.textContent = ok ? (texto ? '✓ Aviso publicado!' : '✓ Aviso removido!') : '✓ Salvo localmente';
+  setTimeout(() => msg.textContent = '', 3000);
+  renderAvisoBanner();
+  admRenderAvisoPreview(texto);
+}
+
+async function admLimparAviso() {
+  document.getElementById('aviso-inp').value = '';
+  configs.aviso = '';
+  localStorage.setItem('mundial2026-configs', JSON.stringify(configs));
+  const ok = await fbSalvar();
+  const msg = document.getElementById('aviso-msg');
+  msg.style.color = '#e74c3c';
+  msg.textContent = ok ? '✓ Aviso removido e publicado!' : '✓ Removido localmente';
+  setTimeout(() => msg.textContent = '', 3000);
+  renderAvisoBanner();
+  admRenderAvisoPreview('');
+}
+
+function admRenderAvisoPreview(texto) {
+  const el = document.getElementById('aviso-preview');
+  if (!el) return;
+  if (!texto) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.innerHTML = `<div style="font-size:0.68rem;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.35);margin-bottom:6px;text-transform:uppercase;">Pré-visualização:</div>
+    <div style="background:rgba(240,192,64,0.12);border:1px solid rgba(240,192,64,0.4);border-radius:8px;padding:10px 14px;">
+      <div style="font-size:0.62rem;font-weight:700;letter-spacing:2px;color:rgba(240,192,64,0.6);margin-bottom:3px;">📢 COMUNICADO DA ORGANIZAÇÃO</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;color:var(--gold);font-weight:600;">${texto}</div>
+    </div>`;
+}
+
+function renderAvisoBanner() {
+  const banner = document.getElementById('aviso-banner');
+  const textoEl = document.getElementById('aviso-texto-pub');
+  if (!banner || !textoEl) return;
+  const texto = (configs && configs.aviso) ? configs.aviso.trim() : '';
+  if (texto) {
+    textoEl.textContent = texto;
+    banner.style.display = 'block';
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ADMIN — SUSPENSOS AUTOMÁTICOS
+// ═══════════════════════════════════════════════════════════
+function calcSuspensos() {
+  const lista = [];
+  times.forEach(t => {
+    t.jogadores.forEach(j => {
+      const am = j.cartoes_amarelo || 0;
+      const vm = j.cartoes_vermelho || 0;
+      if (am >= 2) lista.push({ nome: j.nome, num: j.num, timeNome: t.nome, timeBadge: t.badge || '', timeEmoji: t.emoji, motivo: 'am', detalhe: am + ' 🟡' });
+      else if (vm >= 1) lista.push({ nome: j.nome, num: j.num, timeNome: t.nome, timeBadge: t.badge || '', timeEmoji: t.emoji, motivo: 'vm', detalhe: vm + ' 🔴' });
+    });
+  });
+  return lista;
+}
+
+function admRenderSuspensos() {
+  const lista = calcSuspensos();
+  const container = document.getElementById('adm-suspensos-lista');
+  if (!container) return;
+  if (!lista.length) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.2);font-size:0.85rem;">✅ Nenhum atleta suspenso no momento.</div>';
+  } else {
+    container.innerHTML = lista.map(s => {
+      const bh = s.timeBadge ? `<img style="width:20px;height:20px;object-fit:contain;" src="${s.timeBadge}" alt="">` : s.timeEmoji;
+      return `<div class="suspenso-card">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--gold-dark);width:24px;">${s.num}</div>
+        <div style="flex:1">
+          <div class="suspenso-nome">${s.nome}</div>
+          <div class="suspenso-time">${bh} ${s.timeNome}</div>
+        </div>
+        <span class="suspenso-motivo ${s.motivo}">${s.detalhe} — SUSPENSO</span>
+      </div>`;
+    }).join('');
+  }
+  renderSuspensosPublico(lista);
+}
+
+function renderSuspensosPublico(lista) {
+  const wrap = document.getElementById('suspensos-pub-wrap');
+  const listEl = document.getElementById('suspensos-pub-lista');
+  if (!wrap || !listEl) return;
+  if (!lista || !lista.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  listEl.innerHTML = lista.map(s => {
+    const bh = s.timeBadge ? `<img style="width:20px;height:20px;object-fit:contain;" src="${s.timeBadge}" alt="">` : s.timeEmoji;
+    return `<div class="suspenso-card">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--gold-dark);width:24px;">${s.num}</div>
+      <div style="flex:1">
+        <div class="suspenso-nome">${s.nome}</div>
+        <div class="suspenso-time">${bh} ${s.timeNome}</div>
+      </div>
+      <span class="suspenso-motivo ${s.motivo}">${s.detalhe} — SUSPENSO</span>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ADMIN — W.O.
+// ═══════════════════════════════════════════════════════════
+function admRenderWO() {
+  const sel = document.getElementById('wo-sel-jogo');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— selecione o jogo —</option>';
+  jogos.filter(j => !j.encerrado).forEach(j => {
+    const tA = resolveTeam(j.teamA) || j.teamA;
+    const tB = resolveTeam(j.teamB) || j.teamB;
+    const nameA = timeName(tA) || labelVenc(j.teamA);
+    const nameB = timeName(tB) || labelVenc(j.teamB);
+    const opt = document.createElement('option');
+    opt.value = j.id;
+    opt.textContent = `Jogo ${j.id} — ${nameA} × ${nameB} (${j.data} ${j.hora})`;
+    sel.appendChild(opt);
+  });
+  document.getElementById('wo-field-time').style.display = 'none';
+  document.getElementById('wo-msg').textContent = '';
+}
+
+function woCarregarTimes() {
+  const jogoId = parseInt(document.getElementById('wo-sel-jogo').value);
+  const fieldTime = document.getElementById('wo-field-time');
+  const selTime = document.getElementById('wo-sel-time');
+  if (!jogoId) { fieldTime.style.display = 'none'; return; }
+  const j = jogos.find(x => x.id === jogoId);
+  if (!j) return;
+  const tA = resolveTeam(j.teamA) || j.teamA;
+  const tB = resolveTeam(j.teamB) || j.teamB;
+  const nameA = timeName(tA) || labelVenc(j.teamA);
+  const nameB = timeName(tB) || labelVenc(j.teamB);
+  selTime.innerHTML = `<option value="">— quem perdeu? —</option>
+    <option value="A">${nameA}</option>
+    <option value="B">${nameB}</option>`;
+  fieldTime.style.display = 'flex';
+}
+
+async function admDeclararWO() {
+  const jogoId = parseInt(document.getElementById('wo-sel-jogo').value);
+  const lado = document.getElementById('wo-sel-time').value;
+  const motivo = document.getElementById('wo-motivo').value;
+  const msg = document.getElementById('wo-msg');
+  if (!jogoId) { msg.style.color = '#e74c3c'; msg.textContent = '⚠ Selecione o jogo.'; return; }
+  if (!lado) { msg.style.color = '#e74c3c'; msg.textContent = '⚠ Selecione o time que levou W.O.'; return; }
+  const j = jogos.find(x => x.id === jogoId);
+  if (!j) return;
+  const tA = resolveTeam(j.teamA) || j.teamA;
+  const tB = resolveTeam(j.teamB) || j.teamB;
+  const nomeWO = lado === 'A' ? (timeName(tA) || labelVenc(j.teamA)) : (timeName(tB) || labelVenc(j.teamB));
+  if (!confirm(`Confirmar W.O.?\n\nJogo ${j.id} — Placar: 3×0\nTime que levou W.O.: ${nomeWO}\nMotivo: ${motivo}\n\nEsta ação marcará o jogo como ENCERRADO.`)) return;
+  // Aplica WO: time A perde = B vence 3×0, time B perde = A vence 3×0
+  j.golA = lado === 'A' ? 0 : 3;
+  j.golB = lado === 'B' ? 0 : 3;
+  j.encerrado = true;
+  j.wo = true;
+  j.woMotivo = motivo;
+  j.woTime = nomeWO;
+  localStorage.setItem('mundial2026-jogos', JSON.stringify(jogos));
+  recalculatePlayerGoals();
+  renderTabela(); renderChaves(); renderTimes(); renderArtilharia();
+  const ok = await fbSalvar();
+  msg.style.color = 'var(--green-light)';
+  msg.textContent = ok ? `✓ W.O. declarado! ${nomeWO} perdeu por 3×0. Publicado no Firebase.` : `✓ W.O. declarado! ${nomeWO} perdeu por 3×0. Salvo localmente.`;
+  setTimeout(() => msg.textContent = '', 5000);
+  admRenderWO();
+  if (document.getElementById('adm-jogos-section').classList.contains('open')) admRenderJogos();
 }
 
 // ═══════════════════════════════════════════════════════════
