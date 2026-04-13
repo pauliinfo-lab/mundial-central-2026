@@ -1087,16 +1087,24 @@ function recalculatePlayerGoals(){
 // ═══════════════════════════════════════════════════════════
 //  LOAD DATA
 // ═══════════════════════════════════════════════════════════
+const FIREBASE_CONFIG_EMBUTIDO = {
+  apiKey: "AIzaSyDZlMg-WNdLtC1CnasG7kBRLrSYRXeJOes",
+  authDomain: "mundial-central-2026.firebaseapp.com",
+  databaseURL: "https://mundial-central-2026-default-rtdb.firebaseio.com",
+  projectId: "mundial-central-2026",
+  storageBucket: "mundial-central-2026.firebasestorage.app",
+  messagingSenderId: "652604073121",
+  appId: "1:652604073121:web:22fd29900d486bc1f57ce0",
+  measurementId: "G-LKNGD7CXFV"
+};
+
 async function loadData(){
   try {
-    const raw = localStorage.getItem('mundial2026-fb');
-    if (raw) {
-      const cfg = JSON.parse(raw);
-      if (cfg.apiKey && !fbApp) fbIniciar(cfg);
-      const inp = document.getElementById('fb-config-inp');
-      if (inp && !inp.value) inp.value = JSON.stringify(cfg, null, 2);
-      return; // Firebase cuida do resto via listener
-    }
+    // Config embutida — conecta automaticamente sem precisar configurar pelo admin
+    if (!fbApp) fbIniciar(FIREBASE_CONFIG_EMBUTIDO);
+    const inp = document.getElementById('fb-config-inp');
+    if (inp && !inp.value) inp.value = JSON.stringify(FIREBASE_CONFIG_EMBUTIDO, null, 2);
+    return; // Firebase cuida do resto via listener
   } catch(e) { console.error(e); }
   // Fallback: localStorage local
   try {
