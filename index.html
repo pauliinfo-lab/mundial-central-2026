@@ -334,6 +334,7 @@
   <button onclick="showTab('times',this)">👕 Times & Elencos</button>
   <button onclick="showTab('cadastro',this)">📋 Cadastro</button>
   <button onclick="showTab('regulamento',this)">📜 Regulamento</button>
+  <button onclick="showTab('torneio',this)">🏆 Torneio</button>
   <button onclick="showTab('admin',this)" id="btn-admin" style="margin-left:auto;opacity:0.3;font-size:0.75rem;padding:10px 14px;">⚙ Admin</button>
 </nav>
 
@@ -464,6 +465,142 @@
 
     <!-- Artigos -->
     <div id="reg-artigos"></div>
+
+  </div>
+</section>
+
+
+<!-- TORNEIO INÍCIO — LAUREANO RIVERES -->
+<section id="torneio" style="display:none">
+  <div style="max-width:700px;margin:0 auto;">
+
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:4px;color:var(--gold);">🏆 TORNEIO INÍCIO</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:4px;color:rgba(255,255,255,0.55);margin-top:2px;">LAUREANO RIVERES</div>
+      <div style="margin-top:12px;background:rgba(10,124,62,0.1);border:1px solid rgba(18,163,82,0.25);border-radius:8px;padding:10px 16px;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.55);letter-spacing:1px;">
+        📍 Recanto Central &nbsp;·&nbsp; Sábado, 23 de Maio de 2026
+      </div>
+    </div>
+
+    <!-- CHAVES -->
+    <div class="chaves-grid" style="margin-bottom:24px;">
+      <div class="chave-card chave-a">
+        <h2>CHAVE A</h2>
+        <ul>
+          <li><span class="dot"></span>Manchester City</li>
+          <li><span class="dot"></span>Los Angeles</li>
+          <li><span class="dot"></span>Urawa</li>
+          <li><span class="dot"></span>Borussia</li>
+        </ul>
+      </div>
+      <div class="chave-card chave-b">
+        <h2>CHAVE B</h2>
+        <ul>
+          <li><span class="dot"></span>Chelsea</li>
+          <li><span class="dot"></span>Inter Miami</li>
+          <li><span class="dot"></span>Juventus</li>
+          <li><span class="dot"></span>Atlético de Madri</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- QUARTAS -->
+    <div class="fase-title">⚽ Quartas de Final</div>
+    <div class="chave-matches-list" style="margin-bottom:24px;">
+      <div class="chave-match-card" id="ti-card1">
+        <div class="chave-match-info">
+          <span class="chave-match-hora">📅 23/05/2026 · 13:00 · Recanto Central</span>
+          <span class="chave-match-badge">JOGO 1</span>
+        </div>
+        <div class="chave-match-confronto">
+          <span class="chave-team" id="ti-n1a">Juventus</span>
+          <div class="chave-vs"><span id="ti-p1" class="chave-vs-text">VS</span></div>
+          <span class="chave-team right" id="ti-n1b">Urawa</span>
+        </div>
+      </div>
+      <div class="chave-match-card" id="ti-card2">
+        <div class="chave-match-info">
+          <span class="chave-match-hora">📅 23/05/2026 · 13:15 · Recanto Central</span>
+          <span class="chave-match-badge">JOGO 2</span>
+        </div>
+        <div class="chave-match-confronto">
+          <span class="chave-team" id="ti-n2a">Los Angeles</span>
+          <div class="chave-vs"><span id="ti-p2" class="chave-vs-text">VS</span></div>
+          <span class="chave-team right" id="ti-n2b">Inter Miami</span>
+        </div>
+      </div>
+      <div class="chave-match-card" id="ti-card3">
+        <div class="chave-match-info">
+          <span class="chave-match-hora">📅 23/05/2026 · 13:35 · Recanto Central</span>
+          <span class="chave-match-badge">JOGO 3</span>
+        </div>
+        <div class="chave-match-confronto">
+          <span class="chave-team" id="ti-n3a">Manchester City</span>
+          <div class="chave-vs"><span id="ti-p3" class="chave-vs-text">VS</span></div>
+          <span class="chave-team right" id="ti-n3b">Chelsea</span>
+        </div>
+      </div>
+      <div class="chave-match-card" id="ti-card4">
+        <div class="chave-match-info">
+          <span class="chave-match-hora">📅 23/05/2026 · 13:50 · Recanto Central</span>
+          <span class="chave-match-badge">JOGO 4</span>
+        </div>
+        <div class="chave-match-confronto">
+          <span class="chave-team" id="ti-n4a">Atlético de Madri</span>
+          <div class="chave-vs"><span id="ti-p4" class="chave-vs-text">VS</span></div>
+          <span class="chave-team right" id="ti-n4b">Borussia</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEMIFINAIS -->
+    <div class="fase-title">⚡ Semifinais</div>
+    <div class="chave-matches-list" style="margin-bottom:24px;">
+      <div class="chave-match-card" id="ti-card5">
+        <div class="chave-match-info">
+          <span class="chave-match-hora">📅 23/05/2026 · 14:10 · Recanto Central</span>
+          <span class="chave-match-badge">JOGO 5</span>
+        </div>
+        <div class="chave-match-confronto">
+          <span class="chave-team" id="ti-n5a">Venc. Jogo 1</span>
+          <div class="chave-vs"><span id="ti-p5" class="chave-vs-text">VS</span></div>
+          <span class="chave-team right" id="ti-n5b">Venc. Jogo 2</span>
+        </div>
+      </div>
+      <div class="chave-match-card" id="ti-card6">
+        <div class="chave-match-info">
+          <span class="chave-match-hora">📅 23/05/2026 · 14:25 · Recanto Central</span>
+          <span class="chave-match-badge">JOGO 6</span>
+        </div>
+        <div class="chave-match-confronto">
+          <span class="chave-team" id="ti-n6a">Venc. Jogo 3</span>
+          <div class="chave-vs"><span id="ti-p6" class="chave-vs-text">VS</span></div>
+          <span class="chave-team right" id="ti-n6b">Venc. Jogo 4</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FINAL -->
+    <div class="fase-title">🏆 Final</div>
+    <div class="chave-matches-list" style="margin-bottom:24px;">
+      <div class="chave-match-card" id="ti-card7" style="border-color:rgba(240,192,64,0.3);background:rgba(240,192,64,0.03);">
+        <div class="chave-match-info">
+          <span class="chave-match-hora">📅 23/05/2026 · 15:00 · Recanto Central</span>
+          <span class="chave-match-badge" style="background:rgba(240,192,64,0.15);color:var(--gold);border:1px solid rgba(240,192,64,0.3);">FINAL 🏆</span>
+        </div>
+        <div class="chave-match-confronto">
+          <span class="chave-team" id="ti-n7a">Venc. Jogo 5</span>
+          <div class="chave-vs"><span id="ti-p7" class="chave-vs-text">VS</span></div>
+          <span class="chave-team right" id="ti-n7b">Venc. Jogo 6</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Painel admin do torneio (só aparece se logado) -->
+    <div id="ti-adm-wrap" style="display:none;margin-top:16px;">
+      <div class="fase-title" style="font-size:1rem;color:rgba(255,255,255,0.35);">⚙ Gerenciar Resultados — Torneio Início</div>
+      <div id="ti-adm-jogos"></div>
+    </div>
 
   </div>
 </section>
@@ -2215,6 +2352,7 @@ function showTab(id,btn){
   if(id==='times') renderTimes();
   if(id==='cadastro') cadRenderTeams();
   if(id==='regulamento') renderRegulamento();
+  if(id==='torneio'){ tiRender(); if(admLogado) tiRenderAdmin(); }
   if(id==='admin'){
     if(!admLogado){ document.getElementById('adm-lock').style.display='flex'; document.getElementById('adm-panel').style.display='none'; }
   }
@@ -2482,6 +2620,128 @@ function renderRegulamento(){
       ${a.html}
     </div>
   `).join('');
+}
+
+
+// ═══════════════════════════════════════════════════════════
+//  TORNEIO INÍCIO — LAUREANO RIVERES
+// ═══════════════════════════════════════════════════════════
+const TI_DEFAULT = [
+  {id:1, hora:'13:00', tA:'juventus',  tB:'urawa',    gA:'', gB:'', enc:false},
+  {id:2, hora:'13:15', tA:'la',        tB:'miami',    gA:'', gB:'', enc:false},
+  {id:3, hora:'13:35', tA:'mancity',   tB:'chelsea',  gA:'', gB:'', enc:false},
+  {id:4, hora:'13:50', tA:'atletico',  tB:'borussia', gA:'', gB:'', enc:false},
+  {id:5, hora:'14:10', tA:'venc1',     tB:'venc2',    gA:'', gB:'', enc:false},
+  {id:6, hora:'14:25', tA:'venc3',     tB:'venc4',    gA:'', gB:'', enc:false},
+  {id:7, hora:'15:00', tA:'venc5',     tB:'venc6',    gA:'', gB:'', enc:false},
+];
+
+function tiGetJogos() {
+  if (configs.tiJogos && configs.tiJogos.length === 7) return configs.tiJogos;
+  return JSON.parse(JSON.stringify(TI_DEFAULT));
+}
+
+function tiResolve(id, jogos) {
+  var m = id && id.match(/^venc(\d+)$/);
+  if (!m) return id;
+  var j = jogos.find(function(x){ return x.id === parseInt(m[1]); });
+  if (!j || !j.enc) return null;
+  var gA = parseInt(j.gA), gB = parseInt(j.gB);
+  if (gA > gB) return j.tA;
+  if (gB > gA) return j.tB;
+  return null;
+}
+
+function tiName(id, jogos) {
+  if (!id) return '?';
+  var m = id.match(/^venc(\d+)$/);
+  if (m) {
+    var r = tiResolve(id, jogos);
+    return r ? timeName(r) : 'Venc. Jogo ' + m[1];
+  }
+  return timeName(id);
+}
+
+function tiRender() {
+  var jogos = tiGetJogos();
+  jogos.forEach(function(j) {
+    var nameA = tiName(j.tA, jogos);
+    var nameB = tiName(j.tB, jogos);
+    var elA = document.getElementById('ti-n' + j.id + 'a');
+    var elB = document.getElementById('ti-n' + j.id + 'b');
+    var elP = document.getElementById('ti-p' + j.id);
+    var card = document.getElementById('ti-card' + j.id);
+    if (elA) elA.textContent = nameA;
+    if (elB) elB.textContent = nameB;
+    if (elP) {
+      if (j.enc) {
+        elP.textContent = j.gA + ' \u2013 ' + j.gB;
+        elP.className = 'chave-placar';
+        if (card) card.classList.add('enc');
+      } else {
+        elP.textContent = 'VS';
+        elP.className = 'chave-vs-text';
+        if (card) card.classList.remove('enc');
+      }
+    }
+    if (j.enc && elA && elB) {
+      var gA = parseInt(j.gA), gB = parseInt(j.gB);
+      elA.className = 'chave-team' + (gA > gB ? ' win' : '');
+      elB.className = 'chave-team right' + (gB > gA ? ' win' : '');
+    }
+  });
+  var wrap = document.getElementById('ti-adm-wrap');
+  if (wrap) wrap.style.display = admLogado ? 'block' : 'none';
+}
+
+function tiRenderAdmin() {
+  var jogos = tiGetJogos();
+  var container = document.getElementById('ti-adm-jogos');
+  if (!container) return;
+  var fases = {1:'Quartas de Final', 5:'Semifinais', 7:'Final'};
+  var hdrStyle = 'font-family:Bebas Neue,sans-serif;font-size:0.95rem;letter-spacing:2px;color:var(--gold);padding:14px 0 6px;';
+  var html = '';
+  jogos.forEach(function(j) {
+    var nA = tiName(j.tA, jogos);
+    var nB = tiName(j.tB, jogos);
+    if (fases[j.id]) html += '<div style="' + hdrStyle + '">' + fases[j.id] + '</div>';
+    var checked = j.enc ? 'checked' : '';
+    html += '<div class="adm-jogo" style="margin-bottom:8px;">'
+      + '<div class="adm-jogo-header">'
+      + '<div><div class="adm-jogo-title">Jogo ' + j.id + ': ' + nA + ' \xd7 ' + nB + '</div>'
+      + '<div class="adm-jogo-sub">23/05/2026 \xb7 ' + j.hora + ' \xb7 Recanto Central</div></div>'
+      + '<label class="adm-toggle"><input type="checkbox" ' + checked + ' onchange="tiToggleEnc(' + j.id + ',this.checked)"> Encerrado</label>'
+      + '</div>'
+      + '<div class="adm-row">'
+      + '<div class="adm-field"><label>' + nA + ' \u2014 Gols</label>'
+      + '<input type="number" min="0" value="' + (j.gA || 0) + '" id="ti-ga-' + j.id + '" style="max-width:80px"></div>'
+      + '<div class="adm-field"><label>' + nB + ' \u2014 Gols</label>'
+      + '<input type="number" min="0" value="' + (j.gB || 0) + '" id="ti-gb-' + j.id + '" style="max-width:80px"></div>'
+      + '<button class="adm-btn" onclick="tiSalvar(' + j.id + ')">&#128190; Salvar</button>'
+      + '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+function tiToggleEnc(id, val) {
+  if (!configs.tiJogos || configs.tiJogos.length !== 7) configs.tiJogos = JSON.parse(JSON.stringify(TI_DEFAULT));
+  var j = configs.tiJogos.find(function(x){ return x.id === id; });
+  if (j) j.enc = val;
+}
+
+async function tiSalvar(id) {
+  if (!configs.tiJogos || configs.tiJogos.length !== 7) configs.tiJogos = JSON.parse(JSON.stringify(TI_DEFAULT));
+  var j = configs.tiJogos.find(function(x){ return x.id === id; });
+  if (!j) return;
+  var gaEl = document.getElementById('ti-ga-' + id);
+  var gbEl = document.getElementById('ti-gb-' + id);
+  j.gA = parseInt(gaEl ? gaEl.value : 0) || 0;
+  j.gB = parseInt(gbEl ? gbEl.value : 0) || 0;
+  localStorage.setItem('mundial2026-configs', JSON.stringify(configs));
+  var ok = await fbSalvar();
+  showToastAdmin(ok ? 'Jogo ' + id + ' salvo!' : 'Jogo ' + id + ' salvo (local)');
+  tiRender();
+  tiRenderAdmin();
 }
 
 // ═══════════════════════════════════════════════════════════
