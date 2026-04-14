@@ -517,6 +517,7 @@
           <div class="chave-vs"><span id="ti-p1" class="chave-vs-text">VS</span></div>
           <span class="chave-team right" id="ti-n1b">Urawa</span>
         </div>
+      <div id="ti-sc-row1" style="display:none;font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);font-family:Barlow Condensed,sans-serif;line-height:1.4;"></div>
       </div>
       <div class="chave-match-card" id="ti-card2">
         <div class="chave-match-info">
@@ -528,6 +529,7 @@
           <div class="chave-vs"><span id="ti-p2" class="chave-vs-text">VS</span></div>
           <span class="chave-team right" id="ti-n2b">Inter Miami</span>
         </div>
+      <div id="ti-sc-row2" style="display:none;font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);font-family:Barlow Condensed,sans-serif;line-height:1.4;"></div>
       </div>
       <div class="chave-match-card" id="ti-card3">
         <div class="chave-match-info">
@@ -539,6 +541,7 @@
           <div class="chave-vs"><span id="ti-p3" class="chave-vs-text">VS</span></div>
           <span class="chave-team right" id="ti-n3b">Chelsea</span>
         </div>
+      <div id="ti-sc-row3" style="display:none;font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);font-family:Barlow Condensed,sans-serif;line-height:1.4;"></div>
       </div>
       <div class="chave-match-card" id="ti-card4">
         <div class="chave-match-info">
@@ -550,6 +553,7 @@
           <div class="chave-vs"><span id="ti-p4" class="chave-vs-text">VS</span></div>
           <span class="chave-team right" id="ti-n4b">Borussia</span>
         </div>
+      <div id="ti-sc-row4" style="display:none;font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);font-family:Barlow Condensed,sans-serif;line-height:1.4;"></div>
       </div>
     </div>
 
@@ -566,6 +570,7 @@
           <div class="chave-vs"><span id="ti-p5" class="chave-vs-text">VS</span></div>
           <span class="chave-team right" id="ti-n5b">Venc. Jogo 2</span>
         </div>
+      <div id="ti-sc-row5" style="display:none;font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);font-family:Barlow Condensed,sans-serif;line-height:1.4;"></div>
       </div>
       <div class="chave-match-card" id="ti-card6">
         <div class="chave-match-info">
@@ -577,6 +582,7 @@
           <div class="chave-vs"><span id="ti-p6" class="chave-vs-text">VS</span></div>
           <span class="chave-team right" id="ti-n6b">Venc. Jogo 4</span>
         </div>
+      <div id="ti-sc-row6" style="display:none;font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);font-family:Barlow Condensed,sans-serif;line-height:1.4;"></div>
       </div>
     </div>
 
@@ -593,6 +599,7 @@
           <div class="chave-vs"><span id="ti-p7" class="chave-vs-text">VS</span></div>
           <span class="chave-team right" id="ti-n7b">Venc. Jogo 6</span>
         </div>
+      <div id="ti-sc-row7" style="display:none;font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);font-family:Barlow Condensed,sans-serif;line-height:1.4;"></div>
       </div>
     </div>
 
@@ -2689,24 +2696,42 @@ function tiRender() {
       elA.className = 'chave-team' + (gA > gB ? ' win' : '');
       elB.className = 'chave-team right' + (gB > gA ? ' win' : '');
     }
+    // Show scorers below the match card
+    var scRow = document.getElementById('ti-sc-row' + j.id);
+    if (scRow) {
+      if (j.enc && (j.scA || j.scB)) {
+        var txt = '';
+        if (j.scA) txt += '<strong>' + tiName(j.tA, tiJogos) + ':</strong> ' + j.scA;
+        if (j.scA && j.scB) txt += '&nbsp;&nbsp;|&nbsp;&nbsp;';
+        if (j.scB) txt += '<strong>' + tiName(j.tB, tiJogos) + ':</strong> ' + j.scB;
+        scRow.innerHTML = txt;
+        scRow.style.display = 'block';
+      } else {
+        scRow.style.display = 'none';
+      }
+    }
   });
   var wrap = document.getElementById('ti-adm-wrap');
   if (wrap) wrap.style.display = admLogado ? 'block' : 'none';
 }
 
 function tiRenderAdmin() {
-  var jogos = tiGetJogos();
+  var tiJogos = tiGetJogos();
   var container = document.getElementById('ti-adm-jogos');
   if (!container) return;
   var fases = {1:'Quartas de Final', 5:'Semifinais', 7:'Final'};
   var hdrStyle = 'font-family:Bebas Neue,sans-serif;font-size:0.95rem;letter-spacing:2px;color:var(--gold);padding:14px 0 6px;';
   var html = '';
-  jogos.forEach(function(j) {
-    var nA = tiName(j.tA, jogos);
-    var nB = tiName(j.tB, jogos);
+  tiJogos.forEach(function(j) {
+    var nA = tiName(j.tA, tiJogos);
+    var nB = tiName(j.tB, tiJogos);
+    var rA = tiResolve(j.tA, tiJogos) || j.tA;
+    var rB = tiResolve(j.tB, tiJogos) || j.tB;
+    var jogA = (times.find(function(t){ return t.id === rA; }) || {jogadores:[]}).jogadores.map(function(p){ return p.nome; });
+    var jogB = (times.find(function(t){ return t.id === rB; }) || {jogadores:[]}).jogadores.map(function(p){ return p.nome; });
     if (fases[j.id]) html += '<div style="' + hdrStyle + '">' + fases[j.id] + '</div>';
     var checked = j.enc ? 'checked' : '';
-    html += '<div class="adm-jogo" style="margin-bottom:8px;">'
+    html += '<div class="adm-jogo" style="margin-bottom:10px;">'
       + '<div class="adm-jogo-header">'
       + '<div><div class="adm-jogo-title">Jogo ' + j.id + ': ' + nA + ' \xd7 ' + nB + '</div>'
       + '<div class="adm-jogo-sub">23/05/2026 \xb7 ' + j.hora + ' \xb7 Recanto Central</div></div>'
@@ -2714,14 +2739,191 @@ function tiRenderAdmin() {
       + '</div>'
       + '<div class="adm-row">'
       + '<div class="adm-field"><label>' + nA + ' \u2014 Gols</label>'
-      + '<input type="number" min="0" value="' + (j.gA || 0) + '" id="ti-ga-' + j.id + '" style="max-width:80px"></div>'
+      + '<input type="number" min="0" value="' + (j.gA || 0) + '" id="ti-ga-' + j.id + '" style="max-width:80px" oninput="tiAtualizarContador(' + j.id + ')"></div>'
       + '<div class="adm-field"><label>' + nB + ' \u2014 Gols</label>'
-      + '<input type="number" min="0" value="' + (j.gB || 0) + '" id="ti-gb-' + j.id + '" style="max-width:80px"></div>'
-      + '<button class="adm-btn" onclick="tiSalvar(' + j.id + ')">&#128190; Salvar</button>'
-      + '</div></div>';
+      + '<input type="number" min="0" value="' + (j.gB || 0) + '" id="ti-gb-' + j.id + '" style="max-width:80px" oninput="tiAtualizarContador(' + j.id + ')"></div>'
+      + '<button class="adm-btn" onclick="tiSalvar(' + j.id + ')">\ud83d\udcbe Salvar</button>'
+      + '</div>'
+      + '<div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:14px;">'
+      // Team A scorers
+      + '<div>'
+      + '<label style="font-size:0.68rem;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;display:block;margin-bottom:6px;">\u26bd Artilheiros ' + nA + '</label>'
+      + '<div id="ti-btna-' + j.id + '" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;"></div>'
+      + '<div id="ti-cnt-a-' + j.id + '" style="font-size:0.72rem;color:rgba(255,255,255,0.35);margin-bottom:6px;font-family:Barlow Condensed,sans-serif;letter-spacing:1px;"></div>'
+      + '<input type="text" id="ti-sca-' + j.id + '" value="' + (j.scA || '') + '" placeholder="ou digite manualmente..."'
+      + ' style="width:100%;background:var(--gray);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:var(--white);font-family:Barlow,sans-serif;font-size:0.85rem;padding:8px 10px;outline:none;"'
+      + ' oninput="tiAtualizarTags(' + j.id + ',\'a\');tiAtualizarContador(' + j.id + ')">'
+      + '<div id="ti-tags-a-' + j.id + '" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;"></div>'
+      + '</div>'
+      // Team B scorers
+      + '<div>'
+      + '<label style="font-size:0.68rem;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;display:block;margin-bottom:6px;">\u26bd Artilheiros ' + nB + '</label>'
+      + '<div id="ti-btnb-' + j.id + '" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;"></div>'
+      + '<div id="ti-cnt-b-' + j.id + '" style="font-size:0.72rem;color:rgba(255,255,255,0.35);margin-bottom:6px;font-family:Barlow Condensed,sans-serif;letter-spacing:1px;"></div>'
+      + '<input type="text" id="ti-scb-' + j.id + '" value="' + (j.scB || '') + '" placeholder="ou digite manualmente..."'
+      + ' style="width:100%;background:var(--gray);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:var(--white);font-family:Barlow,sans-serif;font-size:0.85rem;padding:8px 10px;outline:none;"'
+      + ' oninput="tiAtualizarTags(' + j.id + ',\'b\');tiAtualizarContador(' + j.id + ')">'
+      + '<div id="ti-tags-b-' + j.id + '" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;"></div>'
+      + '</div>'
+      + '</div>'
+      + '</div>';
+    // Store player lists for button creation
+    if (!window._tiJog) window._tiJog = {};
+    window._tiJog[j.id] = { a: jogA, b: jogB };
   });
   container.innerHTML = html;
+  // Create player buttons after HTML is set
+  tiJogos.forEach(function(j) {
+    var dados = window._tiJog && window._tiJog[j.id];
+    if (!dados) return;
+    ['a','b'].forEach(function(lado) {
+      var btnContainer = document.getElementById('ti-btn' + lado + '-' + j.id);
+      if (!btnContainer) return;
+      var cls = lado === 'a' ? 'sc-jogador-btn' : 'sc-jogador-btn sc-jogador-btn-b';
+      var jogadores = dados[lado];
+      jogadores.forEach(function(nome) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = cls;
+        btn.textContent = nome;
+        btn.dataset.nome = nome;
+        btn.onclick = function() { tiAdicionarGol(j.id, lado, nome); };
+        btnContainer.appendChild(btn);
+      });
+    });
+    tiAtualizarTags(j.id, 'a');
+    tiAtualizarTags(j.id, 'b');
+    tiAtualizarContador(j.id);
+  });
 }
+
+function tiTotalGols(jogoId, lado) {
+  var inp = document.getElementById('ti-sc' + lado + '-' + jogoId);
+  if (!inp || !inp.value.trim()) return 0;
+  return inp.value.split(',').map(function(p){ return p.trim(); }).filter(Boolean).reduce(function(acc, p) {
+    var m = p.match(/\((\d+)\)/);
+    return acc + (m ? parseInt(m[1]) : 1);
+  }, 0);
+}
+
+function tiGetLimite(jogoId, lado) {
+  var gaEl = document.getElementById('ti-ga-' + jogoId);
+  var gbEl = document.getElementById('ti-gb-' + jogoId);
+  if (lado === 'a') return parseInt((gaEl && gaEl.value) || 0);
+  return parseInt((gbEl && gbEl.value) || 0);
+}
+
+function tiAdicionarGol(jogoId, lado, nome) {
+  var inpId = 'ti-sc' + lado + '-' + jogoId;
+  var inp = document.getElementById(inpId);
+  if (!inp) return;
+  var limite = tiGetLimite(jogoId, lado);
+  var total = tiTotalGols(jogoId, lado);
+  if (total >= limite) {
+    showToastAdmin('Limite de ' + limite + ' gol(s) atingido!');
+    return;
+  }
+  var partes = inp.value.trim() ? inp.value.split(',').map(function(p){ return p.trim(); }).filter(Boolean) : [];
+  var idx = partes.findIndex(function(p){ return p.replace(/\s*\(\d+\)/, '').trim() === nome; });
+  if (idx >= 0) {
+    var m = partes[idx].match(/\((\d+)\)/);
+    partes[idx] = nome + '(' + (m ? parseInt(m[1]) + 1 : 2) + ')';
+  } else {
+    partes.push(nome);
+  }
+  inp.value = partes.join(', ');
+  tiAtualizarTags(jogoId, lado);
+  tiAtualizarContador(jogoId);
+}
+
+function tiRemoverGol(jogoId, lado, nome) {
+  var inpId = 'ti-sc' + lado + '-' + jogoId;
+  var inp = document.getElementById(inpId);
+  if (!inp) return;
+  var partes = inp.value.split(',').map(function(p){ return p.trim(); }).filter(Boolean);
+  var idx = partes.findIndex(function(p){ return p.replace(/\s*\(\d+\)/, '').trim() === nome; });
+  if (idx < 0) return;
+  var m = partes[idx].match(/\((\d+)\)/);
+  var gols = m ? parseInt(m[1]) : 1;
+  if (gols > 1) partes[idx] = nome + '(' + (gols - 1) + ')';
+  else partes.splice(idx, 1);
+  inp.value = partes.join(', ');
+  tiAtualizarTags(jogoId, lado);
+  tiAtualizarContador(jogoId);
+}
+
+function tiGetGolsJog(jogoId, lado, nome) {
+  var inp = document.getElementById('ti-sc' + lado + '-' + jogoId);
+  if (!inp || !inp.value.trim()) return 0;
+  var entry = inp.value.split(',').map(function(p){ return p.trim(); }).find(function(p){ return p.replace(/\s*\(\d+\)/, '').trim() === nome; });
+  if (!entry) return 0;
+  var m = entry.match(/\((\d+)\)/);
+  return m ? parseInt(m[1]) : 1;
+}
+
+function tiAtualizarContador(jogoId) {
+  ['a','b'].forEach(function(lado) {
+    var limite = tiGetLimite(jogoId, lado);
+    var total = tiTotalGols(jogoId, lado);
+    var restam = limite - total;
+    var cntEl = document.getElementById('ti-cnt-' + lado + '-' + jogoId);
+    if (cntEl) {
+      if (limite === 0) { cntEl.textContent = ''; }
+      else if (restam <= 0) { cntEl.style.color = 'var(--green-light)'; cntEl.textContent = '\u2713 Todos os ' + limite + ' gol(s) atribu\xeddo\x73'; }
+      else { cntEl.style.color = 'rgba(255,255,255,0.35)'; cntEl.textContent = total + ' / ' + limite + ' gol(s) \u2014 faltam ' + restam; }
+    }
+    // Update player buttons
+    var btnContainer = document.getElementById('ti-btn' + lado + '-' + jogoId);
+    if (!btnContainer) return;
+    var atingiu = restam <= 0;
+    btnContainer.querySelectorAll('.sc-jogador-btn').forEach(function(btn) {
+      var nome = btn.dataset.nome;
+      if (!nome) return;
+      var g = tiGetGolsJog(jogoId, lado, nome);
+      if (g > 0) {
+        btn.innerHTML = nome + ' <span style="background:rgba(0,0,0,0.35);border-radius:10px;padding:1px 7px;font-size:0.7rem;margin-left:4px;">\u26bd ' + g + '</span>';
+        btn.style.borderColor = lado === 'a' ? 'var(--green-light)' : '#3a82f7';
+        btn.style.background  = lado === 'a' ? 'rgba(18,163,82,0.35)' : 'rgba(58,130,247,0.3)';
+        btn.style.opacity = '1'; btn.disabled = false;
+      } else if (atingiu) {
+        btn.textContent = nome; btn.style.borderColor = ''; btn.style.background = '';
+        btn.style.opacity = '0.3'; btn.disabled = true;
+      } else {
+        btn.textContent = nome; btn.style.borderColor = ''; btn.style.background = '';
+        btn.style.opacity = '1'; btn.disabled = false;
+      }
+    });
+  });
+}
+
+function tiAtualizarTags(jogoId, lado) {
+  var inp = document.getElementById('ti-sc' + lado + '-' + jogoId);
+  var container = document.getElementById('ti-tags-' + lado + '-' + jogoId);
+  if (!inp || !container) return;
+  var cor = lado === 'a' ? '18,163,82' : '58,130,247';
+  var itens = inp.value.split(',').map(function(p){ return p.trim(); }).filter(Boolean);
+  container.innerHTML = '';
+  itens.forEach(function(p) {
+    var nome = p.replace(/\(.*$/, '').trim();
+    var gols = (p.match(/\((\d+)\)/) || [])[1] || '1';
+    if (!nome) return;
+    var span = document.createElement('span');
+    span.style.cssText = 'background:rgba(' + cor + ',0.15);border:1px solid rgba(' + cor + ',0.35);border-radius:20px;padding:3px 6px 3px 10px;font-size:0.72rem;font-family:Barlow Condensed,sans-serif;font-weight:700;display:inline-flex;align-items:center;gap:6px;';
+    var label = document.createElement('span');
+    label.textContent = '\u26bd ' + nome + (parseInt(gols) > 1 ? ' \xd7' + gols : '');
+    var btnP = document.createElement('button');
+    btnP.type = 'button'; btnP.textContent = '+';
+    btnP.style.cssText = 'background:rgba(' + cor + ',0.4);border:none;color:white;width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:0.8rem;line-height:1;padding:0;flex-shrink:0;';
+    btnP.onclick = function() { tiAdicionarGol(jogoId, lado, nome); };
+    var btnM = document.createElement('button');
+    btnM.type = 'button'; btnM.textContent = '\u2212';
+    btnM.style.cssText = 'background:rgba(200,50,50,0.35);border:none;color:white;width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:0.8rem;line-height:1;padding:0;flex-shrink:0;';
+    btnM.onclick = function() { tiRemoverGol(jogoId, lado, nome); };
+    span.appendChild(label); span.appendChild(btnP); span.appendChild(btnM);
+    container.appendChild(span);
+  });
+}
+
 
 function tiToggleEnc(id, val) {
   if (!configs.tiJogos || configs.tiJogos.length !== 7) configs.tiJogos = JSON.parse(JSON.stringify(TI_DEFAULT));
@@ -2735,8 +2937,12 @@ async function tiSalvar(id) {
   if (!j) return;
   var gaEl = document.getElementById('ti-ga-' + id);
   var gbEl = document.getElementById('ti-gb-' + id);
+  var scaEl = document.getElementById('ti-sca-' + id);
+  var scbEl = document.getElementById('ti-scb-' + id);
   j.gA = parseInt(gaEl ? gaEl.value : 0) || 0;
   j.gB = parseInt(gbEl ? gbEl.value : 0) || 0;
+  j.scA = scaEl ? scaEl.value.trim() : '';
+  j.scB = scbEl ? scbEl.value.trim() : '';
   localStorage.setItem('mundial2026-configs', JSON.stringify(configs));
   var ok = await fbSalvar();
   showToastAdmin(ok ? 'Jogo ' + id + ' salvo!' : 'Jogo ' + id + ' salvo (local)');
