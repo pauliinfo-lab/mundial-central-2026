@@ -1215,9 +1215,6 @@ function fbIniciar(cfg) {
           recalculatePlayerGoals();
           renderTabela(); renderChaves(); renderTimes(); renderArtilharia();
           renderAvisoBanner();
-          // Atualiza torneio se a aba estiver ativa ou para manter dados sincronizados
-          tiRender();
-          if (admLogado) tiRenderAdmin();
           const el = document.getElementById('last-update');
           if (el) el.textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR');
         } else {
@@ -2832,9 +2829,9 @@ function tiRender() {
     if (scRow) {
       if (j.enc && (j.scA || j.scB)) {
         var txt = '';
-        if (j.scA) txt += '<strong>' + tiName(j.tA, tiJogos) + ':</strong> ' + j.scA;
+        if (j.scA) txt += '<strong>' + tiName(j.tA, jogos) + ':</strong> ' + j.scA;
         if (j.scA && j.scB) txt += '&nbsp;&nbsp;|&nbsp;&nbsp;';
-        if (j.scB) txt += '<strong>' + tiName(j.tB, tiJogos) + ':</strong> ' + j.scB;
+        if (j.scB) txt += '<strong>' + tiName(j.tB, jogos) + ':</strong> ' + j.scB;
         scRow.innerHTML = txt;
         scRow.style.display = 'block';
       } else {
@@ -2929,8 +2926,7 @@ function tiRenderAdmin() {
 }
 
 function tiTotalGols(jogoId, lado) {
-  var inpId = lado === 'a' ? 'ti-sca-' + jogoId : 'ti-scb-' + jogoId;
-  var inp = document.getElementById(inpId);
+  var inp = document.getElementById('ti-sc' + lado + '-' + jogoId);
   if (!inp || !inp.value.trim()) return 0;
   return inp.value.split(',').map(function(p){ return p.trim(); }).filter(Boolean).reduce(function(acc, p) {
     var m = p.match(/\((\d+)\)/);
@@ -2941,12 +2937,12 @@ function tiTotalGols(jogoId, lado) {
 function tiGetLimite(jogoId, lado) {
   var gaEl = document.getElementById('ti-ga-' + jogoId);
   var gbEl = document.getElementById('ti-gb-' + jogoId);
-  if (lado === 'a') return parseInt((gaEl && gaEl.value) || '0') || 0;
-  return parseInt((gbEl && gbEl.value) || '0') || 0;
+  if (lado === 'a') return parseInt((gaEl && gaEl.value) || 0);
+  return parseInt((gbEl && gbEl.value) || 0);
 }
 
 function tiAdicionarGol(jogoId, lado, nome) {
-  var inpId = lado === 'a' ? 'ti-sca-' + jogoId : 'ti-scb-' + jogoId;
+  var inpId = 'ti-sc' + lado + '-' + jogoId;
   var inp = document.getElementById(inpId);
   if (!inp) return;
   var limite = tiGetLimite(jogoId, lado);
@@ -2969,7 +2965,7 @@ function tiAdicionarGol(jogoId, lado, nome) {
 }
 
 function tiRemoverGol(jogoId, lado, nome) {
-  var inpId = lado === 'a' ? 'ti-sca-' + jogoId : 'ti-scb-' + jogoId;
+  var inpId = 'ti-sc' + lado + '-' + jogoId;
   var inp = document.getElementById(inpId);
   if (!inp) return;
   var partes = inp.value.split(',').map(function(p){ return p.trim(); }).filter(Boolean);
@@ -2985,8 +2981,7 @@ function tiRemoverGol(jogoId, lado, nome) {
 }
 
 function tiGetGolsJog(jogoId, lado, nome) {
-  var inpId = lado === 'a' ? 'ti-sca-' + jogoId : 'ti-scb-' + jogoId;
-  var inp = document.getElementById(inpId);
+  var inp = document.getElementById('ti-sc' + lado + '-' + jogoId);
   if (!inp || !inp.value.trim()) return 0;
   var entry = inp.value.split(',').map(function(p){ return p.trim(); }).find(function(p){ return p.replace(/\s*\(\d+\)/, '').trim() === nome; });
   if (!entry) return 0;
@@ -3030,8 +3025,7 @@ function tiAtualizarContador(jogoId) {
 }
 
 function tiAtualizarTags(jogoId, lado) {
-  var inpId = lado === 'a' ? 'ti-sca-' + jogoId : 'ti-scb-' + jogoId;
-  var inp = document.getElementById(inpId);
+  var inp = document.getElementById('ti-sc' + lado + '-' + jogoId);
   var container = document.getElementById('ti-tags-' + lado + '-' + jogoId);
   if (!inp || !container) return;
   var cor = lado === 'a' ? '18,163,82' : '58,130,247';
