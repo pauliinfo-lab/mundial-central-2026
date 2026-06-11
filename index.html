@@ -59,8 +59,9 @@
   .jogo-info { flex: 1; min-width: 0; }
   .jogo-hora { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; color: rgba(255,255,255,0.4); letter-spacing: 1px; margin-bottom: 4px; }
   .jogo-confronto { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .team-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .team-name.right { text-align: right; }
+  .team-name { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+  .team-name > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .team-name.right { text-align: right; align-items: flex-end; }
   .team-name.winner { color: var(--green-light); }
   .placar-box { display: flex; align-items: center; background: var(--gray); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
   .placar-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--gold); padding: 4px 14px; min-width: 48px; text-align: center; }
@@ -1192,7 +1193,7 @@ function fbIniciar(cfg) {
       fbDb.ref('mundial2026').on('value', snapshot => {
         const data = snapshot.val();
         if (data) {
-          if (data.jogos)   jogos   = data.jogos;
+          if (data.jogos) { jogos = data.jogos; fixarJogosEliminatorios(jogos); }
           if (data.configs) configs = data.configs;
           if (data.times) {
             const remoto = data.times;
@@ -1279,7 +1280,15 @@ async function fbSalvar() {
     return rest;
   });
   try {
-    await fbDb.ref('mundial2026').set({ times: timesParaSalvar, jogos, configs });
+    // Salva jogos eliminatórios com referências dinâmicas (não times fixados)
+    var jogosParaSalvar = jogos.map(function(j){
+      var def = JOGOS_DEFAULT.find(function(d){ return d.id === j.id; });
+      if(def && (def.fase === 'Semifinal' || def.fase === 'Disputa 3º e 4º Lugar' || def.fase === 'Final')){
+        return Object.assign({}, j, {teamA: def.teamA, teamB: def.teamB});
+      }
+      return j;
+    });
+    await fbDb.ref('mundial2026').set({ times: timesParaSalvar, jogos: jogosParaSalvar, configs });
     // Salva cópia de segurança no localStorage
     localStorage.setItem('mundial2026-backup-ts', Date.now().toString());
     localStorage.setItem('mundial2026-backup', JSON.stringify({ times: timesParaSalvar, jogos, configs }));
@@ -1293,6 +1302,16 @@ async function fbSalvar() {
 // ═══════════════════════════════════════════════════════════
 //  HELPERS
 // ═══════════════════════════════════════════════════════════
+// Garante que jogos eliminatórios sempre usem referências dinâmicas das chaves
+function fixarJogosEliminatorios(listaJogos){
+  listaJogos.forEach(function(j){
+    var def = JOGOS_DEFAULT.find(function(d){ return d.id === j.id; });
+    if(def && (def.fase === 'Semifinal' || def.fase === 'Disputa 3º e 4º Lugar' || def.fase === 'Final')){
+      j.teamA = def.teamA;
+      j.teamB = def.teamB;
+    }
+  });
+}
 function badgeImg(id, size='sm'){
   const t=times.find(x=>x.id===id);
   if(t&&t.badge) return `<img class="badge-img-${size}" src="${t.badge}" alt="${t.nome}" onerror="this.style.display='none'">`;
@@ -1402,7 +1421,7 @@ async function loadData(){
     const j = localStorage.getItem('mundial2026-jogos');
     if (j) {
       const parsed = JSON.parse(j);
-      if (Array.isArray(parsed)) { jogos = parsed; jogos.forEach(m=>{if(!m.scorersA)m.scorersA='';if(!m.scorersB)m.scorersB='';}); }
+      if (Array.isArray(parsed)) { jogos = parsed; jogos.forEach(m=>{if(!m.scorersA)m.scorersA='';if(!m.scorersB)m.scorersB='';}); fixarJogosEliminatorios(jogos); }
     }
     const c = localStorage.getItem('mundial2026-configs');
     if (c) configs = JSON.parse(c);
@@ -1414,6 +1433,13 @@ async function loadData(){
 // ═══════════════════════════════════════════════════════════
 //  RENDER PÚBLICO
 // ═══════════════════════════════════════════════════════════
+function getChaveTeamNames(chaveKey){
+  // chaveKey: '1a','2a','1b','2b' etc — retorna nomes dos times da chave
+  const mC = chaveKey && chaveKey.match(/^([12])([ab])$/i);
+  if(!mC) return null;
+  const chave = mC[2].toUpperCase();
+  return times.filter(t=>t.chave===chave).map(t=>t.nome);
+}
 function renderTabela(){
   let html=''; let fase='';
   jogos.forEach(j=>{
@@ -1421,7 +1447,7 @@ function renderTabela(){
     const nameA=tA&&!tA.startsWith('venc')?timeName(tA):labelVenc(j.teamA);
     const nameB=tB&&!tB.startsWith('venc')?timeName(tB):labelVenc(j.teamB);
     const winner=j.encerrado?getWinner(j,tA,tB):null;
-    if(j.fase!==fase){ fase=j.fase; const ic=fase==='Final'?'🏆':fase==='Semifinal'?'⚡':'⚽'; html+=`<div class="fase-title">${ic} ${fase}</div>`; }
+    if(j.fase!==fase){ fase=j.fase; const ic=fase==='Final'?'🏆':fase==='Semifinal'?'⚡':fase.includes('Disput')?'🥉':'⚽'; html+=`<div class="fase-title">${ic} ${fase}</div>`; }
     let scorersHTML='';
     if(j.encerrado&&(j.scorersA||j.scorersB)){
       scorersHTML=`<div style="font-size:0.75rem;color:rgba(255,255,255,0.3);margin-top:8px;font-family:'Barlow Condensed',sans-serif;line-height:1.3;">
@@ -1430,12 +1456,29 @@ function renderTabela(){
         ${j.scorersB?`<strong>${timeName(j.teamB)}:</strong> ${j.scorersB}`:''}
       </div>`;
     }
+    // Sub-info para semifinais/knockout quando time ainda não resolvido
+    let subInfoA='', subInfoB='';
+    if(!j.encerrado){
+      const isPendingA = /^[12][ab]$/i.test(j.teamA);
+      const isPendingB = /^[12][ab]$/i.test(j.teamB);
+      if(isPendingA){
+        const nomes = getChaveTeamNames(j.teamA);
+        if(nomes && nomes.length) subInfoA = `<div style="font-size:0.68rem;color:rgba(255,255,255,0.28);font-family:'Barlow Condensed',sans-serif;letter-spacing:0.5px;margin-top:2px;">${nomes.join(' · ')}</div>`;
+      }
+      if(isPendingB){
+        const nomes = getChaveTeamNames(j.teamB);
+        if(nomes && nomes.length) subInfoB = `<div style="font-size:0.68rem;color:rgba(255,255,255,0.28);font-family:'Barlow Condensed',sans-serif;letter-spacing:0.5px;margin-top:2px;text-align:right;">${nomes.join(' · ')}</div>`;
+      }
+    }
     html+=`<div class="jogo-card ${j.encerrado?'encerrado':''}">
       <div class="jogo-num">${j.id}</div>
       <div class="jogo-info">
         <div class="jogo-hora">📅 ${j.data} · ${j.hora} · Recanto Central</div>
         <div class="jogo-confronto">
-          <span class="team-name ${winner===tA?'winner':''}">${badgeImg(j.teamA,'sm')} ${nameA}</span>
+          <span class="team-name ${winner===tA?'winner':''}">
+            <span>${badgeImg(j.teamA,'sm')} ${nameA}</span>
+            ${subInfoA}
+          </span>
           ${j.encerrado
             ?`<div class="placar-box">
                 <span class="placar-num">${j.golA}</span>
@@ -1443,7 +1486,10 @@ function renderTabela(){
                 <span class="placar-num">${j.golB}</span>
               </div>${(j.penA!==undefined&&j.penB!==undefined)?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;color:rgba(58,130,247,0.8);letter-spacing:1px;margin-left:4px;white-space:nowrap;">(PEN ${j.penA}–${j.penB})</div>`:''}` 
             :`<div class="placar-box"><span class="placar-pending">VS</span></div>`}
-          <span class="team-name right ${winner===tB?'winner':''}">${nameB} ${badgeImg(j.teamB,'sm')}</span>
+          <span class="team-name right ${winner===tB?'winner':''}">
+            <span>${nameB} ${badgeImg(j.teamB,'sm')}</span>
+            ${subInfoB}
+          </span>
         </div>${scorersHTML}
       </div>
       <span class="status-pill ${j.encerrado?'encerrado':'pendente'}">${j.wo?'W.O.':j.encerrado?'ENCERRADO':'PENDENTE'}</span>
