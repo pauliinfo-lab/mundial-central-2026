@@ -1343,7 +1343,7 @@ function resolveTeam(id){
 function recalculatePlayerGoals(){
   times.forEach(t=>t.jogadores.forEach(j=>j.gols=0));
   jogos.filter(j=>j.encerrado).forEach(j=>{
-    const tA=j.teamA,tB=j.teamB;
+    const tA=resolveTeam(j.teamA)||j.teamA, tB=resolveTeam(j.teamB)||j.teamB;
     const teamA=times.find(t=>t.id===tA), teamB=times.find(t=>t.id===tB);
     const parse=(str,team)=>{
       if(!str||!team||typeof str!=='string') return;
